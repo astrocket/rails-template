@@ -22,6 +22,7 @@ def apply_template!
   git_commit("Webpacker and Stimulus installed")
   rails_command("generate rspec:install")
   run "bundle exec guard init"
+  copy_file "Guardfile", "Guardfile", force: true
   git_commit("Rspe & Guard setup")
   npms = %w(axios)
   run "yarn add #{npms.join(' ')}"
