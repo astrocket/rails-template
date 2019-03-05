@@ -1,5 +1,5 @@
-// <div data-controller="<%= controller_pattern  %>">
-//   <h1 data-target="<%= controller_pattern  %>.output"></h1>
+// <div data-controller="<%%= controller_pattern  %>">
+//   <h1 data-target="<%%= controller_pattern  %>.output"></h1>
 // </div>
 import { Controller } from "stimulus";
 import api from 'utils/api';
@@ -9,6 +9,6 @@ export default class extends Controller {
   static targets = [ "output" ];
 
   connect() {
-    this.outputTarget.textContent = 'Hello, Stimulus! from <%= stimulus_path %>'
+    this.outputTarget.textContent = 'Hello, Stimulus! from <%%= stimulus_path %>'
   }
 }

@@ -1,3 +1,3 @@
-template "app/Dockerfile.tt"
-template "web/Dockerfile.tt"
-template "web/nginx.conf.tt"
+template "docker/app/Dockerfile.tt"
+template "docker/web/Dockerfile.tt"
+template "docker/web/nginx.conf.tt"

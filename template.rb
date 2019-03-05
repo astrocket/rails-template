@@ -20,7 +20,7 @@ def apply_template!
 
   rails_command("webpacker:install:stimulus")
   git_commit("Webpacker and Stimulus installed")
-  rails_command("rspec:install")
+  rails_command("generate rspec:install")
   run "bundle exec guard init"
 
   npms = %w(axios)
