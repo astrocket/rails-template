@@ -22,17 +22,17 @@ def apply_template!
   git_commit("Webpacker and Stimulus installed")
   rails_command("rspec:install")
   run "bundle exec guard init"
-  setup_npm_packages
+
+  npms = %w(axios)
+  run "yarn add #{npms.join(' ')}"
 
   apply 'app/template.rb'
   apply 'config/template.rb'
   apply 'lib/template.rb'
+  apply 'spec/template.rb'
+  apply 'docker/template.rb'
+  copy_file 'docker-compose.yml'
 
-end
-
-def setup_npm_packages
-  npms = %w(axios)
-  run "yarn add #{npms.join(' ')}"
 end
 
 def assert_minimum_rails_version
