@@ -37,6 +37,9 @@ def apply_template!
   apply 'docker/template.rb'
   copy_file 'docker-compose.yml'
   git_commit("docker/* setup")
+
+  run 'bin/spring stop'
+  p "Template setted !"
 end
 
 def assert_minimum_rails_version
@@ -116,12 +119,6 @@ def git_push
     git remote: "add upstream #{git_repo_url.shellescape}"
     git push: "-u origin --all"
   end
-end
-
-def run_bundle
-  run 'bin/spring stop'
-  p "Template setted."
-  return
 end
 
 apply_template!

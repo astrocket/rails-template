@@ -10,7 +10,7 @@ class StimulusGenerator < Rails::Generators::Base
   end
 
   def generate_stimulus
-    template 'page.js.erb', stimulus_path
+    template 'controller.js.erb', stimulus_path
   end
 
 end
