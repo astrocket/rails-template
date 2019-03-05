@@ -12,7 +12,7 @@ Simple rails template for general project.
 To generate a Rails application using this template, pass the `-m` option to `rails new`, like this:
 
 ```bash
-rails new project -d postgresql \
+rails new project -T -d postgresql \
     -m https://raw.githubusercontent.com/astrocket/rails-template/master/template.rb
 ```
 

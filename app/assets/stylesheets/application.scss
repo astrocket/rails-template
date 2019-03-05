@@ -1,0 +1,15 @@
+@import "constants";
+@import "/\*";
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+input:focus, select:focus, textarea:focus, button:focus {
+  outline: none;
+}
