@@ -17,22 +17,26 @@ def apply_template!
 
   run "gem install bundler --no-document --conservative"
   run "bundle install"
-
+  git_commit("Gemfile setup")
   rails_command("webpacker:install:stimulus")
   git_commit("Webpacker and Stimulus installed")
   rails_command("generate rspec:install")
   run "bundle exec guard init"
-
+  git_commit("Rspe & Guard setup")
   npms = %w(axios)
   run "yarn add #{npms.join(' ')}"
-
+  git_commit("Yarn installed")
   apply 'app/template.rb'
+  git_commit("app/* setup")
   apply 'config/template.rb'
+  git_commit("config/* setup")
   apply 'lib/template.rb'
+  git_commit("lib/* setup")
   apply 'spec/template.rb'
+  git_commit("spec/* setup")
   apply 'docker/template.rb'
   copy_file 'docker-compose.yml'
-
+  git_commit("docker/* setup")
 end
 
 def assert_minimum_rails_version
