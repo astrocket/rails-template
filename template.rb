@@ -38,6 +38,8 @@ def apply_template!
   apply 'docker/template.rb'
   copy_file 'docker-compose.yml'
   git_commit("docker/* setup")
+  copy_file 'README.md'
+  git_commit("readme update")
 end
 
 def assert_minimum_rails_version
