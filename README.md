@@ -67,6 +67,13 @@ docker exec -it processid bash
 tail -f log/production.log
 ```
 
+Automated deploy task
+
+After pushing repository to git and providing deployment information in `lib/tasks/deploy.rake` file.
+You can automate above process.
+
+`rails deploy:production`
+
 ## Testing
 
 [rspec-rails](https://github.com/rspec/rspec-rails)
