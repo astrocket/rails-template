@@ -2,7 +2,7 @@ require "fileutils"
 require "shellwords"
 require "tmpdir"
 
-RAILS_REQUIREMENT = "~> 6.0.0.beta2".freeze
+RAILS_REQUIREMENT = "~> 6.0.0.beta3".freeze
 
 def apply_template!
   assert_minimum_rails_version
@@ -24,7 +24,7 @@ def apply_template!
   run "bundle exec guard init"
   copy_file "Guardfile", "Guardfile", force: true
   git_commit("Rspe & Guard setup")
-  npms = %w(axios)
+  npms = %w(axios stimulus @stimulus/polyfills)
   run "yarn add #{npms.join(' ')}"
   git_commit("Yarn installed")
   apply 'app/template.rb'
