@@ -13,13 +13,15 @@ RUN apk add --no-cache --update \
     nodejs \
     yarn
 
-ENV RAILS_ROOT /usr/app/<%= app_name %>
+ARG APP_NAME
+
+ENV RAILS_ROOT $APP_NAME
 
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
 ENV RAILS_ENV='production'
-ENV BUNDLE_PATH /usr/app/<%= app_name %>/bundle
+ENV BUNDLE_PATH ./bundle
 
 COPY package.json yarn.lock ./
 RUN yarn install --production

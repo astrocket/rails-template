@@ -5,9 +5,11 @@ volumes:
   bundle_data: {}
 services:
   app:
-    build:
+    build: &rails_app
       context: .
-      dockerfile: ./docker/app/Dockerfile
+      dockerfile: ./docker/app/DockerFile
+      args: &arguments
+        - APP_NAME=/<%= app_name %>
     command: bundle exec puma -C config/puma.rb
     depends_on:
       - db
@@ -17,33 +19,29 @@ services:
       - RAILS_SERVE_STATIC_FILES=true
     ports:
       - 3000:3000
-    volumes:
-      - log_data:/usr/app/<%= app_name %>/log
-      - bundle_data:/usr/app/<%= app_name %>/bundle
-  db:
-    image: postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    volumes: &volumes
+      - log_data:/<%= app_name %>/log
+      - bundle_data:/<%= app_name %>/log
   web:
     build:
       context: .
-      dockerfile: ./docker/web/Dockerfile
+      dockerfile: ./docker/web/DockerFile
+      args: *arguments
     depends_on:
       - app
     ports:
       - 80:80
-    volumes:
-      - log_data:/usr/app/<%= app_name %>/log
-  redis:
-    image: 'redis'
+    volumes: *volumes
   sidekiq:
-    build:
-      context: .
-      dockerfile: ./docker/app/Dockerfile
+    build: *rails_app
     command: bundle exec sidekiq -C config/sidekiq.yml
     depends_on:
-      - 'db'
-      - 'redis'
+      - db
+      - redis
+    volumes: *volumes
+  db:
+    image: postgres
     volumes:
-      - log_data:/usr/app/<%= app_name %>/log
-      - bundle_data:/usr/app/<%= app_name %>/bundle
+      - postgres_data:/var/lib/postgresql/data
+  redis:
+    image: redis
