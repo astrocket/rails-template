@@ -18,7 +18,7 @@ services:
     environment:
       - RAILS_SERVE_STATIC_FILES=true
     ports:
-      - 3000:3000
+      - 3000
     volumes: &volumes
       - log_data:/<%= app_name %>/log
       - bundle_data:/<%= app_name %>/log

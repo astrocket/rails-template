@@ -1,6 +1,3 @@
-upstream puma_rails_app {
-  server app:3000;
-}
 server {
   listen       80;
   server_name <%= app_domain %>;
@@ -10,24 +7,28 @@ server {
   proxy_send_timeout 10s;
   proxy_read_timeout 10s;
   root $RAILS_ROOT/public;
+  
   location ~ ^assets/ {
     gzip_static on;
     expires max;
     add_header Cache-Control public;
   }
+
   location ~ ^packs/ {
     gzip_static on;
     expires max;
     add_header Cache-Control public;
   }
+
   location / {
     try_files $uri @rails_app;
   }
+
   location @rails_app {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header Host $http_host;
     proxy_redirect off;
-    proxy_pass http://puma_rails_app;
+    proxy_pass http://app:3000;
     # limit_req zone=one;
     access_log $RAILS_ROOT/log/nginx.access.log;
     error_log $RAILS_ROOT/log/nginx.error.log;

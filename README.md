@@ -67,12 +67,19 @@ docker exec -it processid bash
 tail -f log/production.log
 ```
 
+Scale your rails application to 3 replicas.
+```bash
+docker-compose up --scale app=3 -d
+```
+
 Automated deploy task
 
 After pushing repository to git and providing deployment information in `lib/tasks/deploy.rake` file.
 You can automate above process.
 
-`rails deploy:production`
+```bash
+rails deploy:production
+```
 
 ## Testing
 
@@ -84,3 +91,7 @@ You can automate above process.
 ```bash
 bundle exec rspec
 ```
+
+---
+
+[scale docker containers](https://pspdfkit.com/blog/2018/how-to-use-docker-compose-to-run-multiple-instances-of-a-service-in-development/)
