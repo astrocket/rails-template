@@ -67,9 +67,9 @@ docker exec -it processid bash
 tail -f log/production.log
 ```
 
-Scale your rails application to 3 replicas.
+Scale your rails application to 5 replicas.
 ```bash
-docker-compose up --scale app=3 -d
+docker-compose up --scale app=5 -d
 ```
 
 Automated deploy task
