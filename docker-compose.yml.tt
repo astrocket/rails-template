@@ -10,7 +10,7 @@ services:
       dockerfile: ./docker/app/DockerFile
       args: &arguments
         - APP_NAME=/<%= app_name %>
-    command: bundle exec puma -C config/puma.rb
+    command: ./run.sh
     depends_on:
       - db
       - redis
