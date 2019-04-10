@@ -35,5 +35,4 @@ RUN bundle exec rake assets:precompile
 
 EXPOSE 3000
 
-CMD bundle exec rake db:create
-CMD bundle exec rake db:migrate
+RUN ["chmod", "+x", "./run.sh"]
