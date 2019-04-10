@@ -18,6 +18,7 @@ def apply_template!
   run "gem install bundler --no-document --conservative"
   run "bundle install"
   git_commit("Gemfile setup")
+  rails_command("webpacker:install")
   rails_command("webpacker:install:stimulus")
   git_commit("Webpacker and Stimulus installed")
   rails_command("generate rspec:install")
