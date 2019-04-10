@@ -7,7 +7,7 @@ services:
   app:
     build: &rails_app
       context: .
-      dockerfile: ./docker/app/DockerFile
+      dockerfile: ./docker/app/Dockerfile
       args: &arguments
         - APP_NAME=/<%= app_name %>
     command: ./run.sh
@@ -25,7 +25,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: ./docker/web/DockerFile
+      dockerfile: ./docker/web/Dockerfile
       args: *arguments
     depends_on:
       - app
