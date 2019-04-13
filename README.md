@@ -21,6 +21,7 @@ rails new project -T -d postgresql \
 ## What's included?
 
 * Docker for production deploy
+* Nginx Proxy server configuration with Let's encrypt SSL Certificate
 * Webpacker and Stimulus setting for client javascript
 * ActiveJob + Sidekiq + Redis setting for async jobs 
 * Foreman setting for integrative dev setup
@@ -54,17 +55,26 @@ It generates
 
 After installing docker & docker-compose.
 
+Set up a seperate Nginx-Proxy container from your host machine. [link](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion)
 ```bash
+git clone https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion.git
+cd docker-compose-letsencrypt-nginx-proxy-companion
+mv .env.sample .env
+./start.sh
+```
+
+Clone your repository to host machine and build docker-compose.
+```bash
+git clone http://github.com/username/your_own_rails_repository
 docker-compose build
 docker-compose up -d
 ```
 
-To see your live application log
+To see your live container log
 
 ```bash
 docker ps
-docker exec -it processid bash
-tail -f log/production.log
+docker log -f processid
 ```
 
 Scale your rails application to 5 replicas.

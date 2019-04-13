@@ -89,6 +89,10 @@ def app_domain
   @app_domain ||= ask_with_default("What is the app domain for this project?", :blue, "example.com")
 end
 
+def admin_email
+  @admin_email ||= ask_with_default("What is the admin's email address? (for SSL Certificate)", :blue, "admin@example.com")
+end
+
 def ask_with_default(question, color, default)
   return default unless $stdin.tty?
   question = (question.split("?") << " [#{default}]?").join

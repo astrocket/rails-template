@@ -17,6 +17,9 @@ services:
       - sidekiq
     environment:
       - RAILS_SERVE_STATIC_FILES=true
+      - VIRTUAL_HOST=<%= app_domain %>
+      - LETSENCRYPT_HOST=<%= app_domain %>
+      - LETSENCRYPT_EMAIL=<%= admin_email %>
     ports:
       - 3000
     volumes: &volumes
@@ -45,3 +48,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
   redis:
     image: redis
+networks:
+  default:
+    external:
+      name: webproxy
