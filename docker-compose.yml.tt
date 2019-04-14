@@ -11,15 +11,12 @@ services:
       args: &arguments
         - APP_NAME=/<%= app_name %>
     command: ./run.sh
-    depends_on:
+    links:
       - db
       - redis
       - sidekiq
     environment:
       - RAILS_SERVE_STATIC_FILES=true
-      - VIRTUAL_HOST=<%= app_domain %>
-      - LETSENCRYPT_HOST=<%= app_domain %>
-      - LETSENCRYPT_EMAIL=<%= admin_email %>
     ports:
       - 3000
     volumes: &volumes
@@ -30,15 +27,19 @@ services:
       context: .
       dockerfile: ./docker/web/Dockerfile
       args: *arguments
-    depends_on:
+    links:
       - app
+    environment:
+      - VIRTUAL_HOST=<%= app_domain %>
+      - LETSENCRYPT_HOST=<%= app_domain %>
+      - LETSENCRYPT_EMAIL=<%= admin_email %>
     ports:
-      - 80:80
+      - 80
     volumes: *volumes
   sidekiq:
     build: *rails_app
     command: bundle exec sidekiq -C config/sidekiq.yml
-    depends_on:
+    links:
       - db
       - redis
     volumes: *volumes

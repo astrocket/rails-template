@@ -53,9 +53,9 @@ It generates
 
 ## Production deploy process
 
-After installing docker & docker-compose.
+After installing docker & docker-compose in your host machine.
 
-Set up a seperate Nginx-Proxy container from your host machine. [link](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion)
+Set up a seperate Nginx-Proxy docker container in your host machine. [link](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion)
 ```bash
 git clone https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion.git
 cd docker-compose-letsencrypt-nginx-proxy-companion
@@ -79,7 +79,7 @@ docker log -f processid
 
 Scale your rails application to 5 replicas.
 ```bash
-docker-compose up --scale app=5 -d
+docker-compose up -d --scale app=5
 ```
 
 Automated deploy task

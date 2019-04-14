@@ -21,12 +21,13 @@ RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
 ENV RAILS_ENV='production'
-ENV BUNDLE_PATH ./bundle
+ENV BUNDLE_PATH /bundle
 
 COPY package.json yarn.lock ./
 RUN yarn install --production
 
 COPY Gemfile Gemfile.lock ./
+RUN gem install bundler:2.0.1
 RUN bundle install --jobs 20 --retry 5 --without development test
 
 COPY . .

@@ -10,6 +10,7 @@ gem 'puma', '~> 3.11'<%= gemfile_requirement("puma") %>
 # gem 'redis', '~> 4.0'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
+# gem 'aws-sdk-s3' # for DigitalOcean config
 
 # Auth
 # gem 'devise'
@@ -22,6 +23,10 @@ gem 'jbuilder', '~> 2.5'
 gem 'sass-rails', '~> 5.0'
 gem 'webpacker', '>= 4.0.0.rc.3'
 gem 'turbolinks', '~> 5'
+
+# CMS
+# gem 'activeadmin'
+# gem 'arbre', '>= 1.2.1'
 
 # Background
 gem 'sidekiq'
