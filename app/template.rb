@@ -9,7 +9,7 @@ copy_file 'app/controllers/api/api_controller.rb'
 
 copy_file 'app/javascript/utils/api.js'
 copy_file 'app/javascript/utils/helpers.js'
-copy_file 'app/javascript/controllers/index.js'
+copy_file 'app/javascript/controllers/index.js', force: true
 
 copy_file 'app/lib/exceptions/default_error.rb'
 copy_file 'app/lib/bot_helper.rb'
