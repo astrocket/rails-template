@@ -2,7 +2,7 @@ require "fileutils"
 require "shellwords"
 require "tmpdir"
 
-RAILS_REQUIREMENT = "~> 6.0.0.beta3".freeze
+RAILS_REQUIREMENT = "~> 6.0.0.rc1".freeze
 
 def apply_template!
   assert_minimum_rails_version
