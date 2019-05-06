@@ -32,8 +32,4 @@ RUN bundle install --jobs 20 --retry 5 --without development test
 
 COPY . .
 
-RUN bundle exec rake assets:precompile
-
-EXPOSE 3000
-
-RUN ["chmod", "+x", "./docker/app/run.sh"]
+RUN ["chmod", "+x", "./docker/sidekiq/run.sh"]

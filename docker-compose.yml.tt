@@ -3,25 +3,41 @@ volumes:
   postgres_data: {}
   log_data: {}
   bundle_data: {}
+  redis_data: {}
 services:
   app:
-    build: &rails_app
+    build:
       context: .
       dockerfile: ./docker/app/Dockerfile
       args: &arguments
         - APP_NAME=/<%= app_name %>
-    command: ./run.sh
+    command: ./docker/app/run.sh
     links:
       - db
       - redis
       - sidekiq
     environment:
+      - RAILS_ENV=production
+      - RAILS_LOG_TO_STDOUT=true
       - RAILS_SERVE_STATIC_FILES=true
     ports:
       - 3000
     volumes: &volumes
       - log_data:/<%= app_name %>/log
       - bundle_data:/<%= app_name %>/bundle
+  sidekiq:
+    build:
+      context: .
+      dockerfile: ./docker/sidekiq/Dockerfile
+      args: *arguments
+    command: ./docker/sidekiq/run.sh
+    links:
+      - db
+      - redis
+    environment:
+      - RAILS_ENV=production
+      - RAILS_LOG_TO_STDOUT=true
+    volumes: *volumes
   web:
     build:
       context: .
@@ -35,20 +51,16 @@ services:
       - LETSENCRYPT_EMAIL=<%= admin_email %>
     ports:
       - 80
-    volumes: *volumes
-  sidekiq:
-    build: *rails_app
-    command: bundle exec sidekiq -C config/sidekiq.yml
-    links:
-      - db
-      - redis
-    volumes: *volumes
+    volumes:
+      - log_data:/<%= app_name %>/log
   db:
     image: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
   redis:
     image: redis
+    volumes:
+      - redis_data:/data
 networks:
   default:
     external:

@@ -38,7 +38,6 @@ def apply_template!
   git_commit("spec/* setup")
   apply 'docker/template.rb'
   template 'docker-compose.yml'
-  copy_file 'run.sh'
   git_commit("docker/* setup")
   copy_file 'README.md', force: true
   git_commit("readme update")

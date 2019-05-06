@@ -70,13 +70,6 @@ docker-compose build
 docker-compose up -d
 ```
 
-To see your live container log
-
-```bash
-docker ps
-docker log -f processid
-```
-
 Scale your rails application to 5 replicas.
 ```bash
 docker-compose up -d --scale app=5
@@ -105,3 +98,46 @@ bundle exec rspec
 ---
 
 [scale docker containers](https://pspdfkit.com/blog/2018/how-to-use-docker-compose-to-run-multiple-instances-of-a-service-in-development/)
+
+## Docker CMDs
+
+To see your live container log
+
+```bash
+docker ps
+docker log -f processid
+```
+
+Check images / containers
+
+```bash
+docker images -a
+docker container ls -a
+```
+
+Remove all abandonded images
+
+```bash
+docker rmi -f $(docker images -a | grep "none" | awk '{print $3}')
+```
+Destry all exited containers remove scientist name containers
+
+```bash
+docker container rm $(docker container ls -aq --filter status=exited)
+```
+
+Prune (be careful)
+
+```bash
+docker container prune
+docker image prune
+docker network prune
+docker volume prune
+```
+
+Stop and delete specific container
+
+```bash
+docker stop processid
+docker rm processid
+```
