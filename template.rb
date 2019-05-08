@@ -15,7 +15,7 @@ def apply_template!
   copy_file "Procfile", "Procfile", force: true
   template "ruby-version.tt", ".ruby-version", force: true
 
-  run "gem install bundler --no-document --conservative"
+  run "gem install bundler -v '~> 2.0.0' --no-document --conservative"
   run "bundle install"
   git_commit("Gemfile setup")
   rails_command("webpacker:install")
