@@ -29,7 +29,7 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header Host $http_host;
     proxy_redirect off;
-    proxy_pass http://app:3000;
+    proxy_pass http://rails:3000;
     access_log $RAILS_ROOT/log/nginx.access.log;
     error_log $RAILS_ROOT/log/nginx.error.log;
   }

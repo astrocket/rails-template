@@ -5,13 +5,13 @@ volumes:
   bundle_data: {}
   redis_data: {}
 services:
-  app:
+  rails:
     build:
       context: .
-      dockerfile: ./docker/app/Dockerfile
+      dockerfile: ./docker/rails/Dockerfile
       args: &arguments
         - APP_NAME=/<%= app_name %>
-    command: ./docker/app/run.sh
+    command: ./docker/rails/run.sh
     links:
       - db
       - redis
@@ -38,13 +38,13 @@ services:
       - RAILS_ENV=production
       - RAILS_LOG_TO_STDOUT=true
     volumes: *volumes
-  web:
+  nginx:
     build:
       context: .
-      dockerfile: ./docker/web/Dockerfile
+      dockerfile: ./docker/nginx/Dockerfile
       args: *arguments
     links:
-      - app
+      - rails
     environment:
       - VIRTUAL_HOST=<%= app_domain %>
       - LETSENCRYPT_HOST=<%= app_domain %>

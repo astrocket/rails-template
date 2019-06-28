@@ -24,7 +24,7 @@ def apply_template!
   rails_command("generate rspec:install")
   run "bundle exec guard init"
   run "guard init livereload"
-  git_commit("Rspe & Guard setup")
+  git_commit("Rspec & Guard setup")
   npms = %w(axios stimulus @stimulus/polyfills)
   run "yarn add #{npms.join(' ')}"
   git_commit("Yarn installed")
