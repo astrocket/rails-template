@@ -39,6 +39,9 @@ def apply_template!
   apply 'docker/template.rb'
   template 'docker-compose.yml'
   git_commit("docker/* setup")
+  rails_command("active_admin:install AdminUser") if use_active_admin == 'yes'
+  git_commit("ActiveAdmin installed") if use_active_admin == 'yes'
+  rails_command("db:setup")
   copy_file 'README.md', force: true
   git_commit("readme update")
 end
@@ -94,6 +97,10 @@ end
 
 def slack_notification
   @slack_notification ||= ask_with_default("Would you like to use Slack as a notification service?", :blue, "yes")
+end
+
+def use_active_admin
+  @use_active_admin ||= ask_with_default("Would you like to use ActiveAdmin as admin?", :blue, "yes")
 end
 
 def ask_with_default(question, color, default)

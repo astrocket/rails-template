@@ -28,14 +28,14 @@ gem 'turbolinks', '~> 5'
 # gem 'inline_svg' if using svg files
 
 # CMS
-# gem 'activeadmin'
-# gem 'activeadmin_addons'
-# gem 'arctic_admin'
-# gem 'arbre', '>= 1.2.1'
+<%= "#" unless use_active_admin == 'yes' %>gem 'activeadmin'
+<%= "#" unless use_active_admin == 'yes' %>gem 'activeadmin_addons'
+<%= "#" unless use_active_admin == 'yes' %>gem 'arctic_admin'
+<%= "#" unless use_active_admin == 'yes' %>gem 'arbre', '>= 1.2.1'
 
 # Background
 gem 'sidekiq'
-gem 'slack-ruby-client'
+<%= "#" unless slack_notification == 'yes' %>gem 'slack-ruby-client'
 # gem 'whenever'
 
 gem 'bootsnap', '>= 1.1.0', require: false
