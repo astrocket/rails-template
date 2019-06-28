@@ -92,6 +92,10 @@ def admin_email
   @admin_email ||= ask_with_default("What is the admin's email address? (for SSL Certificate)", :blue, "admin@example.com")
 end
 
+def slack_notification
+  @slack_notification ||= ask_with_default("Would you like to use Slack as a notification service?", :blue, "yes")
+end
+
 def ask_with_default(question, color, default)
   return default unless $stdin.tty?
   question = (question.split("?") << " [#{default}]?").join

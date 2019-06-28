@@ -35,6 +35,7 @@ gem 'turbolinks', '~> 5'
 
 # Background
 gem 'sidekiq'
+gem 'slack-ruby-client'
 # gem 'whenever'
 
 gem 'bootsnap', '>= 1.1.0', require: false
