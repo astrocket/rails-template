@@ -14,8 +14,8 @@ gem 'puma', '~> 3.11'<%= gemfile_requirement("puma") %>
 # gem 'aws-sdk-s3' # for DigitalOcean config
 
 # Auth
-# gem 'devise'
-# gem 'devise-i18n'
+<%= "#" unless use_active_admin == 'yes' %>gem 'devise'
+<%= "#" unless use_active_admin == 'yes' %>gem 'devise-i18n'
 
 # Model
 gem 'jbuilder', '~> 2.5'
