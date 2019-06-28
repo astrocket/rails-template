@@ -69,18 +69,8 @@ module BotHelper
     kst.strftime("%Y-%m-%d %H:%M")
   end
 
-  def in_krw(num)
-    if num.to_f > 1000000000000
-      "#{(num.to_f / 1000000000000).round(2)}조"
-    elsif num.to_f > 100000000
-      "#{(num.to_f / 100000000).round(2)}억"
-    else
-      "#{(num.to_f / 10000).round(0)}만"
-    end
-  end
-
   def show_map(address)
-    url_shortner("#{URI.escape("http://map.daum.net?q=#{address}")}#!/all/map/place")
+    url_shortner("#{URI.escape("http://map.kakao.com?q=#{address}")}#!/all/map/place")
   end
 
 end
