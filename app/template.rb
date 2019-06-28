@@ -6,8 +6,6 @@ copy_file 'app/assets/stylesheets/application.scss'
 copy_file 'app/assets/stylesheets/designs/_constants.scss'
 copy_file 'app/assets/stylesheets/designs/_base.scss'
 
-copy_file 'app/assets/stylesheets/active_admin.scss' if use_active_admin == 'yes'
-
 copy_file 'app/controllers/api/api_controller.rb'
 
 copy_file 'app/javascript/utils/api.js'

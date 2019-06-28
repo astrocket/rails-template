@@ -39,7 +39,8 @@ def apply_template!
   apply 'docker/template.rb'
   template 'docker-compose.yml'
   git_commit("docker/* setup")
-  rails_command("active_admin:install AdminUser") if use_active_admin == 'yes'
+  run "rails generate active_admin:install AdminUser" if use_active_admin == 'yes'
+  copy_file 'app/assets/stylesheets/active_admin.scss', force: true if use_active_admin == 'yes'
   git_commit("ActiveAdmin installed") if use_active_admin == 'yes'
   rails_command("db:setup")
   copy_file 'README.md', force: true
