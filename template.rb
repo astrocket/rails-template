@@ -42,7 +42,9 @@ def apply_template!
   run "rails generate active_admin:install AdminUser" if use_active_admin == 'yes'
   copy_file 'app/assets/stylesheets/active_admin.scss', force: true if use_active_admin == 'yes'
   git_commit("ActiveAdmin installed") if use_active_admin == 'yes'
-  rails_command("db:setup")
+  rails_command("db:create")
+  rails_command("db:migrate")
+  rails_command("db:seed")
   copy_file 'README.md', force: true
   git_commit("readme update")
 end
