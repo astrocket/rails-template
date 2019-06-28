@@ -1,14 +1,14 @@
-// <div data-controller="<%%= controller_pattern  %>">
-//   <h1 data-target="<%%= controller_pattern  %>.output"></h1>
+// <div data-controller="<%%= controller_pattern %>">
+//
 // </div>
 import { Controller } from "stimulus";
 import api from 'utils/api';
 import helpers from 'utils/helpers';
 
 export default class extends Controller {
-  static targets = [ "output" ];
+  static targets = [ "" ];
 
   connect() {
-    this.outputTarget.textContent = 'Hello, Stimulus! from <%%= stimulus_path %>'
+    console.log("Stimulus connected from <%%= stimulus_path %>");
   }
 }
