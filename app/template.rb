@@ -1,6 +1,11 @@
 apply 'app/controllers/application_controller.rb'
+copy_file 'app/controllers/errors_controller.rb'
 apply 'app/models/application_record.rb'
 apply 'app/helpers/application_helper.rb'
+
+copy_file 'app/views/errors/404.html.erb'
+copy_file 'app/views/errors/422.html.erb'
+copy_file 'app/views/errors/500.html.erb'
 
 copy_file 'app/assets/stylesheets/application.scss'
 copy_file 'app/assets/stylesheets/designs/_constants.scss'

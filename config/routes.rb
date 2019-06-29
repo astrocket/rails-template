@@ -9,6 +9,10 @@ insert_into_file 'config/routes.rb', before: /^end/ do
   namespace :api do
 
   end
+
+  %w( 404 422 500 ).each do |code|
+    get code, :to => "errors#show", :code => code
+  end
   RUBY
   else
   <<-'RUBY'
@@ -17,6 +21,10 @@ insert_into_file 'config/routes.rb', before: /^end/ do
 
   namespace :api do
 
+  end
+
+  %w( 404 422 500 ).each do |code|
+    get code, :to => "errors#show", :code => code
   end
   RUBY
   end
