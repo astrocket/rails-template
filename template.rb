@@ -30,8 +30,6 @@ def apply_template!
   git_commit("Yarn installed")
   apply 'app/template.rb'
   git_commit("app/* setup")
-  apply 'config/template.rb'
-  git_commit("config/* setup")
   apply 'lib/template.rb'
   git_commit("lib/* setup")
   apply 'spec/template.rb'
@@ -49,6 +47,8 @@ def apply_template!
   end
   rails_command("db:migrate")
   rails_command("db:seed")
+  apply 'config/template.rb'
+  git_commit("config/* setup")
   copy_file 'README.md', force: true
   git_commit("readme update")
 end
