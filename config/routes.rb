@@ -1,10 +1,25 @@
 insert_into_file 'config/routes.rb', before: /^end/ do
-  <<-'RUBY'
-   require 'sidekiq/web'
-   mount Sidekiq::Web => '/sidekiq'
-  
-   namespace :api do
-      
-   end
-  RUBY
+  if use_active_admin
+    <<-'RUBY'
+    devise_for :admin_users, ActiveAdmin::Devise.config
+    ActiveAdmin.routes(self)
+    authenticate :admin_user do
+      require 'sidekiq/web'
+      mount Sidekiq::Web => '/sidekiq'
+    end
+
+    namespace :api do
+       
+    end
+   RUBY
+  else
+    <<-'RUBY'
+    require 'sidekiq/web'
+    mount Sidekiq::Web => '/sidekiq'
+   
+    namespace :api do
+       
+    end
+   RUBY
+  end
 end

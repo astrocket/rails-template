@@ -24,9 +24,11 @@ rails new project -T -d postgresql \
 * Nginx Proxy server configuration with Let's encrypt SSL Certificate
 * Webpacker and Stimulus setting for client javascript
 * ActiveJob + Sidekiq + Redis setting for async jobs 
+* ActiveAdmin + ArcticAdmin for application admin
 * Foreman setting for integrative dev setup
 * Rspec + FactoryBot setting for test code
 * Guard + LiveReload setting for hot reloading
+* Slack Message Notification for Exception
 
 ## Foreman start task
 
