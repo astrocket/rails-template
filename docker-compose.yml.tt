@@ -11,6 +11,7 @@ services:
       dockerfile: ./docker/rails/Dockerfile
       args: &arguments
         - APP_NAME=/<%= app_name %>
+    restart: always
     command: ./docker/rails/run.sh
     links:
       - db
@@ -30,6 +31,7 @@ services:
       context: .
       dockerfile: ./docker/sidekiq/Dockerfile
       args: *arguments
+    restart: always
     command: ./docker/sidekiq/run.sh
     links:
       - db
@@ -43,6 +45,7 @@ services:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
       args: *arguments
+    restart: always
     links:
       - rails
     environment:
