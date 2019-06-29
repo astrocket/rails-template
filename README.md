@@ -55,9 +55,9 @@ It generates
 
 ## Production deploy process
 
-After installing docker & docker-compose in your host machine.
+After installing [docker](https://docs.docker.com/install/) & [docker-compose](https://docs.docker.com/compose/install/) in your host machine.
 
-Set up a seperate Nginx-Proxy docker container in your host machine. [link](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion)
+Set up a seperate [Nginx-Proxy docker container](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion) in your host machine.
 ```bash
 git clone https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion.git
 cd docker-compose-letsencrypt-nginx-proxy-companion
@@ -72,12 +72,12 @@ docker-compose build
 docker-compose up -d
 ```
 
-Scale your rails application to 5 replicas.
+Scale your rails application to 5 replicas. [scale docker containers](https://pspdfkit.com/blog/2018/how-to-use-docker-compose-to-run-multiple-instances-of-a-service-in-development/)
 ```bash
 docker-compose up -d --scale app=5
 ```
 
-Automated deploy task
+## Automated deploy task
 
 After pushing repository to git and providing deployment information in `lib/tasks/deploy.rake` file.
 You can automate above process.
@@ -98,8 +98,6 @@ bundle exec rspec
 ```
 
 ---
-
-[scale docker containers](https://pspdfkit.com/blog/2018/how-to-use-docker-compose-to-run-multiple-instances-of-a-service-in-development/)
 
 ## Docker CMDs
 
@@ -143,3 +141,6 @@ Stop and delete specific container
 docker stop processid
 docker rm processid
 ```
+
+## TODO
+- 
