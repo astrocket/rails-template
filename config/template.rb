@@ -1,5 +1,6 @@
 apply "config/application.rb"
 apply "config/environments/development.rb"
+apply "config/environments/production.rb"
 apply "config/routes.rb"
 
 template "config/database.yml.tt", force: true

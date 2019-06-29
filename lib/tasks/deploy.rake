@@ -1,5 +1,5 @@
 namespace :deploy do
-  task :production do
+  task :production => :environment do
     remote_server = nil # Type your remove server information. ex) ubuntu@172.0.0.1
     project_path = nil # Type your project path. ex) /home/project/sample
     raise "Server Information Not Given. (Check '/lib/tasks/deploy.rake' for detail)" if remote_server.nil? or project_path.nil?
