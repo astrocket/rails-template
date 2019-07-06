@@ -105,7 +105,7 @@ To see your live container log
 
 ```bash
 docker ps
-docker log -f processid
+docker logs -f --tail 5 processid
 ```
 
 Check images / containers
@@ -119,6 +119,7 @@ Remove all abandonded images
 
 ```bash
 docker rmi -f $(docker images -a | grep "none" | awk '{print $3}')
+docker rmi $(docker images -f "dangling=true" -q)
 ```
 Destry all exited containers remove scientist name containers
 
