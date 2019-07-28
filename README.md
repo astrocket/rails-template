@@ -72,6 +72,13 @@ docker-compose build
 docker-compose up -d
 ```
 
+Make sure your production database table is created before deploy(it doesn't support db:create yet)
+```bash
+# After accessing to your postgres container
+su - postgres
+createdb project_production;
+```
+
 Scale your rails application to 5 replicas. [scale docker containers](https://pspdfkit.com/blog/2018/how-to-use-docker-compose-to-run-multiple-instances-of-a-service-in-development/)
 ```bash
 docker-compose up -d --scale app=5
