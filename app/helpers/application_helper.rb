@@ -1,7 +1,7 @@
 insert_into_file 'app/helpers/application_helper.rb', before: /^end/ do
   <<-'RUBY'
   def stc
-    "#{controller_path.gsub('_', '-').gsub('/', '--')}--#{action_name}"
+    "#{controller_path.gsub('_', '-').gsub('/', '--')}--#{action_name.gsub('_', '-')}"
   end
   
   def human_time(datetime)
