@@ -2,12 +2,13 @@ require "fileutils"
 require "shellwords"
 require "tmpdir"
 
-RAILS_REQUIREMENT = "~> 6.0.0.rc1".freeze
+RAILS_REQUIREMENT = "~> 6.0.0".freeze
 
 def apply_template!
   assert_minimum_rails_version
   assert_postgresql
   add_template_repository_to_source_path
+  ask_questions # Ask if using React
 
   template "Gemfile.tt", force: true
 
@@ -18,16 +19,26 @@ def apply_template!
   run "gem install bundler -v '~> 2.0.0' --no-document --conservative"
   run "bundle install"
   git_commit("Gemfile setup")
+
   rails_command("webpacker:install")
-  rails_command("webpacker:install:stimulus")
-  git_commit("Webpacker and Stimulus installed")
+  if use_react
+    rails_command("webpacker:install:react")
+    git_commit("Webpacker and React installed")
+    npms = ["axios", "hookrouter", "eslint-plugin-react-hooks --dev"]
+  else
+    rails_command("webpacker:install:stimulus")
+    git_commit("Webpacker and Stimulus installed")
+    npms = %w(axios stimulus @stimulus/polyfills)
+  end
+
+  run "yarn add #{npms.join(' ')}"
+  git_commit("Yarn installed")
+
   rails_command("generate rspec:install")
   run "bundle exec guard init"
   run "guard init livereload"
   git_commit("Rspec & Guard setup")
-  npms = %w(axios stimulus @stimulus/polyfills)
-  run "yarn add #{npms.join(' ')}"
-  git_commit("Yarn installed")
+
   apply 'app/template.rb'
   git_commit("app/* setup")
   apply 'lib/template.rb'
@@ -38,7 +49,7 @@ def apply_template!
   template 'docker-compose.yml'
   git_commit("docker/* setup")
   rails_command("db:create")
-  if use_active_admin == 'yes'
+  if use_active_admin
     run "rails generate devise:install" 
     rails_command("db:migrate")
     run "rails generate active_admin:install AdminUser"
@@ -90,6 +101,15 @@ def gemfile_requirement(name)
   req && req.gsub("'", %(")).strip.sub(/^,\s*"/, ', "')
 end
 
+def ask_questions
+  use_react
+  use_active_admin
+  use_slack_notification
+  git_repo_url
+  app_domain
+  admin_email
+end
+
 def git_repo_url
   @git_repo_url ||= ask_with_default("What is the git remote URL for this project?", :blue, "skip")
 end
@@ -102,13 +122,21 @@ def admin_email
   @admin_email ||= ask_with_default("What is the admin's email address? (for SSL Certificate)", :blue, "admin@example.com")
 end
 
-def slack_notification
-  @slack_notification ||= ask_with_default("Would you like to use Slack as a notification service?", :blue, "yes")
+def use_slack_notification
+  @use_slack_notification ||= ask_with_default("Would you like to use Slack as a notification service?", :blue, "yes")
+  @use_slack_notification == "yes"
 end
 
 def use_active_admin
   @use_active_admin ||= ask_with_default("Would you like to use ActiveAdmin as admin?", :blue, "yes")
+  @use_active_admin == "yes"
 end
+
+def use_react
+  @use_react ||= ask_with_default("Would you like to use React as front-end?", :blue, "yes")
+  @use_react == "yes"
+end
+
 
 def ask_with_default(question, color, default)
   return default unless $stdin.tty?
@@ -144,10 +172,7 @@ def git_push
   end
 end
 
-def run_bundle
-  run 'bin/spring stop'
-  p "Template setted."
-  return
-end
+def run_bundle; end
+def run_webpack; end
 
 apply_template!

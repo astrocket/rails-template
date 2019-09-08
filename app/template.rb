@@ -15,11 +15,15 @@ copy_file 'app/controllers/api/api_controller.rb'
 
 copy_file 'app/javascript/utils/api.js'
 copy_file 'app/javascript/utils/helpers.js'
-copy_file 'app/javascript/controllers/index.js', force: true
+if use_react
+
+else
+  copy_file 'app/javascript/controllers/index.js', force: true
+end
 
 copy_file 'app/jobs/http_post_job.rb'
 template 'app/lib/exceptions/default_error.rb.tt'
 copy_file 'app/lib/bot_helper.rb'
 
-copy_file 'app/jobs/slack_message_job.rb' if slack_notification == 'yes'
-copy_file 'app/services/slack_service.rb' if slack_notification == 'yes'
+copy_file 'app/jobs/slack_message_job.rb' if use_slack_notification
+copy_file 'app/services/slack_service.rb' if use_slack_notification
