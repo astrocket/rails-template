@@ -27,6 +27,8 @@ if use_react
 
   copy_file 'app/controllers/react_controller.rb'
   template 'app/views/layouts/react.html.erb.tt'
+
+  copy_file 'app/controllers/api/home_controller.rb'
 else
   copy_file 'app/javascript/controllers/index.js', force: true
 end

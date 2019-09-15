@@ -14,7 +14,7 @@ insert_into_file 'config/routes.rb', before: /^end/ do
   end
 
   namespace :api do
-    get '/' => 'home#index'
+    get '/home/index' => 'home#index'
   end
 
   if use_react

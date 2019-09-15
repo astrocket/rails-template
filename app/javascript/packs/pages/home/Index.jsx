@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { A } from "hookrouter";
+import api from 'utils/api';
 
 function Index() {
+    const [ helloWorld, setHelloWorld ] = useState('loading...');
 
     useEffect(() => {
         console.log(window, 'mount');
-
+        api.get('/api/home/index').then((res) => {
+            setHelloWorld(res.data.hello);
+        });
         return () => {
             console.log(window, 'unmount')
         }
     }, []);
 
     return (
-        <h2>HomeIndex Page from React.js</h2>
+        <div>
+            <h2>HomeIndex Page from React.js</h2>
+            <p>{helloWorld}</p>
+        </div>
     );
 }
 
