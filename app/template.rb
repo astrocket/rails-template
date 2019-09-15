@@ -15,8 +15,12 @@ copy_file 'app/controllers/api/api_controller.rb'
 
 copy_file 'app/javascript/utils/api.js'
 copy_file 'app/javascript/utils/helpers.js'
-if use_react
 
+if use_react
+  copy_file 'app/javascript/packs/application.js', force: true
+  copy_file 'app/javascript/packs/routes.js'
+  copy_file 'app/javascript/packs/App.jsx'
+  copy_file 'app/javascript/packs/pages/home/Index.jsx'
 else
   copy_file 'app/javascript/controllers/index.js', force: true
 end

@@ -5,19 +5,13 @@ insert_into_file 'config/routes.rb', before: /^end/ do
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
   end
-
-  namespace :api do
-
-  end
-
-  %w( 404 422 500 ).each do |code|
-    get code, :to => "errors#show", :code => code
-  end
   RUBY
   else
   <<-'RUBY'
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
+  RUBY
+  end
 
   namespace :api do
 
@@ -25,7 +19,5 @@ insert_into_file 'config/routes.rb', before: /^end/ do
 
   %w( 404 422 500 ).each do |code|
     get code, :to => "errors#show", :code => code
-  end
-  RUBY
   end
 end
