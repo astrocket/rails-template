@@ -5,6 +5,7 @@ require "tmpdir"
 RAILS_REQUIREMENT = "~> 6.0.0".freeze
 
 def apply_template!
+
   assert_minimum_rails_version
   assert_postgresql
   add_template_repository_to_source_path
@@ -158,6 +159,7 @@ def git_commit(msg)
 
   git add: "-A ."
   git commit: "-n -m '#{msg}'"
+  puts set_color msg, :green
 end
 
 def git_push
@@ -173,6 +175,9 @@ def git_push
 end
 
 def run_bundle; end
-def run_webpack; end
+def run_webpack
+  set_color "All set!", :green
+  set_color "Start by running 'rails hot'", :green
+end
 
 apply_template!
