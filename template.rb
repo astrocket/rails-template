@@ -44,7 +44,7 @@ def apply_template!
   git_commit("Rspec & Guard setup")
 
   apply 'app/template.rb'
-  run "rm app/stylesheets/application.css"
+  run "rm app/assets/stylesheets/application.css"
   git_commit("app/* setup")
   apply 'lib/template.rb'
   git_commit("lib/* setup")
@@ -170,7 +170,7 @@ def git_push
   git :init unless preexisting_git_repo?
 
   git add: "-A ."
-  git commit: "-n -m 'Project initalized'"
+  git commit: "-n -m 'initializing project'"
   if git_repo_specified?
     git remote: "add origin #{git_repo_url.shellescape}"
     git remote: "add upstream #{git_repo_url.shellescape}"
@@ -180,8 +180,9 @@ end
 
 def run_bundle; end
 def run_webpack
-  set_color "All set!", :green
-  set_color "Start by running 'rails hot'", :green
+  puts set_color "All set!====================", :green
+  puts set_color "Start by running 'rails hot'", :green
+  puts set_color "============================", :green
 end
 
 apply_template!

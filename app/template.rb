@@ -30,7 +30,7 @@ if use_react
 
   copy_file 'app/controllers/api/home_controller.rb'
 
-  copy_file 'app/javascript/packs/application.js', force: true
+  copy_file 'app/assets/javascripts/application.js', force: true
   template 'app/views/layouts/application.html.erb.tt', force: true
 else
   copy_file 'app/javascript/controllers/index.js', force: true

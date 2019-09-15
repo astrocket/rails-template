@@ -22,7 +22,7 @@ rails new project -T -d postgresql \
 
 * Docker for production deploy
 * Nginx Proxy server configuration with Let's encrypt SSL Certificate
-* Webpacker and Stimulus setting for client javascript
+* React / Stimulus setting for client javascript
 * ActiveJob + Sidekiq + Redis setting for async jobs 
 * ActiveAdmin + ArcticAdmin for application admin
 * Foreman setting for integrative dev setup
@@ -43,7 +43,11 @@ It runs
 * guard
 * sidekiq
 
-## Stimulus generator
+## Stimulus.js
+
+With [stimulus.js]([https://stimulusjs.org](https://stimulusjs.org/)) you can keep your client-side code style as basic style `html + css + js` stack and still get the advantages of modern Javascript open sources through npm.
+
+###  generator
 
 Stimulus specific generator task.
 
@@ -52,6 +56,20 @@ with `rails g stimulus posts index`
 It generates
 
 * `app/javascript/posts/index_controller.js` with sample html markup containing stimulus path helper.
+
+## React.js
+
+With [react.js](https://reactjs.org/) you can build modern single page application in the most common way. (This template implements react.js with hooks.)
+
+In order to integrate react.js and rails.
+
+Template contains
+
+- react layout : `react.html.erb`
+- routing for react : `/:path => 'react#index'`
+- routing for rails : `/api`, `/app`
+- some examples with routing over rails pages <-> react pages
+- example functional component with fetching api from client to server.
 
 ## Production deploy process
 
@@ -151,4 +169,5 @@ docker rm processid
 ```
 
 ## TODO
+- Zero downtime deployment with docker-compose.
 - 
