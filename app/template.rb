@@ -13,6 +13,9 @@ copy_file 'app/assets/stylesheets/designs/_base.scss'
 
 copy_file 'app/controllers/api/api_controller.rb'
 
+copy_file 'app/controllers/home_controller.rb'
+template 'app/views/home/index.html.erb.tt'
+
 copy_file 'app/javascript/utils/api.js'
 copy_file 'app/javascript/utils/helpers.js'
 
