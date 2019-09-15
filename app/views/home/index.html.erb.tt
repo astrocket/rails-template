@@ -1,5 +1,4 @@
-<div>
-<% if use_react %>
+<div><% if use_react %>
   <a href="/home">React SPA /home</a>
   <br>
   <a href="/about">React SPA /about</a>
@@ -7,8 +6,7 @@
   <a href="/">Rails SSR /</a>
 <% else %>
   <a href="/">Home</a>
-<% end %>
-</div>
+<% end %></div>
 <hr>
 <h2>
   Application Root

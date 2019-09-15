@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "<%= RUBY_VERSION %>"
 
-gem "rails", "~> <%= Rails.version %>"
+gem "rails", "~> <%= Rails.version || "~> 6.0.0" %>"
 # gem 'rails-i18n'
 
 gem 'pg', '>= 0.18', '< 2.0'<%= gemfile_requirement("pg") %>

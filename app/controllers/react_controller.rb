@@ -1,4 +1,3 @@
 class ReactController < ApplicationController
-  layout 'react'
-  def index; end
+  def index; render "layout/react" end
 end

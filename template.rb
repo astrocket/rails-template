@@ -33,6 +33,9 @@ def apply_template!
   end
 
   run "yarn add #{npms.join(' ')}"
+  if use_react
+    run "yarn remove turbolinks"
+  end
   git_commit("Yarn installed")
 
   rails_command("generate rspec:install")
@@ -41,6 +44,7 @@ def apply_template!
   git_commit("Rspec & Guard setup")
 
   apply 'app/template.rb'
+  run "rm app/stylesheets/application.css"
   git_commit("app/* setup")
   apply 'lib/template.rb'
   git_commit("lib/* setup")
@@ -134,7 +138,7 @@ def use_active_admin
 end
 
 def use_react
-  @use_react ||= ask_with_default("Would you like to use React as front-end?", :blue, "yes")
+  @use_react ||= ask_with_default("Would you like to use React as front-end? (if not stimulus.js will be installed)", :blue, "yes")
   @use_react == "yes"
 end
 
