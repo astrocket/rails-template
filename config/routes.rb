@@ -14,7 +14,16 @@ insert_into_file 'config/routes.rb', before: /^end/ do
   end
 
   namespace :api do
+    get '/' => 'home#index'
+  end
 
+  if use_react
+  <<-'RUBY'
+  # To render react packs for any path except app/api 
+  scope '/:path', constraints: { path: /.+/ } do
+    get '/' => 'react#index', as: :react # react_path
+  end
+  RUBY
   end
 
   %w( 404 422 500 ).each do |code|

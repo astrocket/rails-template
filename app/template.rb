@@ -21,6 +21,9 @@ if use_react
   copy_file 'app/javascript/packs/routes.js'
   copy_file 'app/javascript/packs/App.jsx'
   copy_file 'app/javascript/packs/pages/home/Index.jsx'
+
+  copy_file 'app/controllers/react_controller.rb'
+  template 'app/views/layouts/react.html.erb.tt'
 else
   copy_file 'app/javascript/controllers/index.js', force: true
 end
