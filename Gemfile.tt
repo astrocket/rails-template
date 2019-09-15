@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "<%= RUBY_VERSION %>"
 
-gem "rails", "~> <%= Rails.version %>"
+gem "rails", "~> <%= Rails.version || "~> 6.0.0" %>"
 # gem 'rails-i18n'
 
 gem 'pg', '>= 0.18', '< 2.0'<%= gemfile_requirement("pg") %>
@@ -14,8 +14,8 @@ gem 'puma', '~> 3.11'<%= gemfile_requirement("puma") %>
 # gem 'aws-sdk-s3' # for DigitalOcean config
 
 # Auth
-<%= "#" unless use_active_admin == 'yes' %>gem 'devise'
-<%= "#" unless use_active_admin == 'yes' %>gem 'devise-i18n'
+<%= "#" unless use_active_admin %>gem 'devise'
+<%= "#" unless use_active_admin %>gem 'devise-i18n'
 
 # Model
 gem 'jbuilder', '~> 2.5'
@@ -23,19 +23,19 @@ gem 'jbuilder', '~> 2.5'
 
 # View
 gem 'sass-rails', '~> 5.0'
-gem 'webpacker', '>= 4.0.0.rc.3'
-gem 'turbolinks', '~> 5'
+gem 'webpacker', '>= 4.0.0'
+<%= "gem 'turbolinks', '~> 5'" unless use_react %>
 # gem 'inline_svg' if using svg files
 
 # CMS
-<%= "#" unless use_active_admin == 'yes' %>gem 'activeadmin'
-<%= "#" unless use_active_admin == 'yes' %>gem 'activeadmin_addons'
-<%= "#" unless use_active_admin == 'yes' %>gem 'arctic_admin'
-<%= "#" unless use_active_admin == 'yes' %>gem 'arbre', '>= 1.2.1'
+<%= "#" unless use_active_admin %>gem 'activeadmin'
+<%= "#" unless use_active_admin %>gem 'activeadmin_addons'
+<%= "#" unless use_active_admin %>gem 'arctic_admin'
+<%= "#" unless use_active_admin %>gem 'arbre', '>= 1.2.1'
 
 # Background
 gem 'sidekiq'
-<%= "#" unless slack_notification == 'yes' %>gem 'slack-ruby-client'
+<%= "#" unless use_slack_notification %>gem 'slack-ruby-client'
 # gem 'whenever'
 
 gem 'bootsnap', '>= 1.1.0', require: false

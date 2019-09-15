@@ -1,31 +1,53 @@
 insert_into_file 'config/routes.rb', before: /^end/ do
   if use_active_admin
   <<-'RUBY'
+  
   authenticate :admin_user do
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
   end
-
-  namespace :api do
-
-  end
-
-  %w( 404 422 500 ).each do |code|
-    get code, :to => "errors#show", :code => code
-  end
   RUBY
   else
   <<-'RUBY'
+  
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
-
-  namespace :api do
-
+  RUBY
   end
+end
+
+insert_into_file 'config/routes.rb', before: /^end/ do
+  <<-'RUBY'
+  
+  namespace :api do
+    get '/home/index' => 'home#index'
+  end
+  RUBY
+end
+
+insert_into_file 'config/routes.rb', before: /^end/ do
+  if use_react
+  <<-'RUBY'
+  
+  namespace :app do
+    get '/' => 'home#index'
+  end
+
+  # To render react packs for any path except app/api 
+  scope '/:path', constraints: { path: /.+/ } do
+    get '/' => 'react#index', as: :react # react_path
+  end
+  RUBY
+  end
+end
+
+insert_into_file 'config/routes.rb', before: /^end/ do
+  <<-'RUBY'
+  
+  root 'home#index'
 
   %w( 404 422 500 ).each do |code|
     get code, :to => "errors#show", :code => code
   end
   RUBY
-  end
 end

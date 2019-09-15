@@ -12,6 +12,11 @@ class SlackService
       SlackMessageJob.perform_later("*#{title}*#{"\n"}```#{msg}```", CHANNELS[channel])
     end
 
+    def send_exception(e, title = e.message, prepend = nil)
+      title = "🤔 " + title
+      SlackMessageJob.perform_later("*#{title}*#{"\n"}```#{prepend}#{"\n"}#{e.backtrace.first(20).join("\n")}```", CHANNELS[:error])
+    end
+
     def upload_file(file, channel = :log)
       # client.files_upload(
       #     channels: '#general',

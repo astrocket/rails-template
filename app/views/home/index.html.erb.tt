@@ -1,0 +1,13 @@
+<div><% if use_react %>
+  <a href="/home">React SPA /home</a>
+  <br>
+  <a href="/about">React SPA /about</a>
+  <br>
+  <a href="/">Rails SSR /</a>
+<% else %>
+  <a href="/">Home</a>
+<% end %></div>
+<hr>
+<h2>
+  Application Root
+</h2>
