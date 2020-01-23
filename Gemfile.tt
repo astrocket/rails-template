@@ -6,8 +6,8 @@ ruby "<%= RUBY_VERSION %>"
 gem "rails", "~> <%= Rails.version || "~> 6.0.0" %>"
 # gem 'rails-i18n'
 
-gem 'pg', '>= 0.18', '< 2.0'<%= gemfile_requirement("pg") %>
-gem 'puma', '~> 3.11'<%= gemfile_requirement("puma") %>
+gem 'pg', <%= gemfile_requirement("pg") %>
+gem 'puma', <%= gemfile_requirement("puma") %>
 # gem 'redis', '~> 4.0'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
