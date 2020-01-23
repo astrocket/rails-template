@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: <%= k8s_name %>-app
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: <%= k8s_name %>-app
+    tier: postgres
+---
+apiVersion: v1
+kind: StorageClass
+metadata:
+  name: postgres-pv
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 4Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp/data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: postgres
+  labels:
+    app: <%= k8s_name %>-app
+spec:
+  replicas: 1
+  selector:
+    app: <%= k8s_name %>-app
+    tier: postgres
+  template:
+    metadata:
+      name: postgres
+      labels:
+        app: <%= k8s_name %>-app
+        tier: postgres
+    spec:
+      volumes:
+        - name: postgres-pv
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+      containers:
+        - name: postgres
+          image: postgres:11-alpine
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-username
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-password
+                  key: password
+            - name: PGDATA
+              value: /var/lib/postgresql/data
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data"
+              name: postgres-pv

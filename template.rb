@@ -59,6 +59,10 @@ def app_domain
   @app_domain ||= ask_with_default("What is the app domain for this project?", :blue, "example.com")
 end
 
+def k8s_name
+  app_name.downcase.gsub("_", "-")
+end
+
 def admin_email
   @admin_email ||= ask_with_default("What is the admin's email address? (for SSL Certificate)", :blue, "admin@example.com")
 end

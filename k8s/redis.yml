@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: <%= k8s_name %>-app
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: <%= k8s_name %>-app
+    tier: redis
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp/data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    app: <%= k8s_name %>-app
+    tier: redis
+  template:
+    metadata:
+      name: redis
+      labels:
+        app: <%= k8s_name %>-app
+        tier: redis
+    spec:
+      volumes:
+        - name: redis-pv
+          persistentVolumeClaim:
+            claimName: redis-pvc
+      containers:
+        - name: redis
+          image: redis:5-alpine
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: "/data"
+              name: redis-pv

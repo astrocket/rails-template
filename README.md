@@ -20,7 +20,7 @@ $ rails new project -T -d postgresql \
 
 ## What's included?
 
-* Docker for production deploy
+* Kubernetes & Docker for production deploy
 * Nginx Proxy server configuration with Let's encrypt SSL Certificate
 * React / Stimulus setting for client javascript
 * ActiveJob + Sidekiq + Redis setting for async jobs 
@@ -60,7 +60,7 @@ It generates
 
 ## React.js
 
-With [react.js](https://reactjs.org/) you can build modern single page application in the most common way. (This template implements react.js with hooks.)
+With [react.js](https://reactjs.org/) you can build modern single page application. (This template implements react.js with hooks.)
 
 In order to integrate react.js and rails.
 
@@ -85,54 +85,77 @@ bundle exec rspec
 
 # Deploy
 
-## docker & docker-compose
-install [docker](https://docs.docker.com/install/) & [docker-compose](https://docs.docker.com/compose/install/) in your host machine.
+## Production deploy process
 
-## Prepare Nginx-Proxy & SSL auto generator
+### Create New Kubernetes cluster from DigitalOcean
 
-Set up a [Nginx-Proxy docker container](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion) in your host machine.
+https://cloud.digitalocean.com/kubernetes
+Make sure to remember your cluster's name to connect later
 
+### Install Kubectl
+
+The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters. ([link](https://kubernetes.io/docs/tasks/tools/install-kubectl/))
 ```bash
-$ git clone https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion.git
-
-$ cd docker-compose-letsencrypt-nginx-proxy-companion
-
-$ mv .env.sample .env
-
-// uncomment below from your own .env
-// USE_NGINX_CONF_FILES=true
-
-$ ./start.sh
+brew install kubectl
+# kubectl version
 ```
 
-## create application images
+### Connect your cluster
 
-Clone your repository to host machine and build images through docker-compose.
+Use the name of your cluster instead of example-cluster-01 in the following command.
 
-or you can use independent Image hosting service like [docker hub](https://hub.docker.com/) and refer them in `docker-compose.yml`
-
-```bash
-$ git clone http://github.com/username/your_own_rails_repository
-$ docker-compose build
-$ docker-compose up -d
-```
-
-## prepare production database table
-
-this project doesn't support db:create cmd yet.
-Make sure your production database table is created before deploy.
-or you can have separate database hosting (recommended)
+> doctl is a DigitalOcean's own cli tool ([link](https://github.com/digitalocean/doctl))
 
 ```bash
-# After accessing to your postgres container
-$ su - postgres
-$ createdb project_production;
+brew install doctl
+doctl auth init
 ```
+Generate API Token & Paste it ([link](https://cloud.digitalocean.com/account/api/tokens))
+```bash
+DigitalOcean access token: your_DO_token
+```
+Connect
+```bash
+doctl kubernetes cluster kubeconfig save example-cluster-01
+# kubectl config current-context
+```
+
+### Persistent Volume Claim
+
+To persist certain kind of data(database, log, queue) from being destroyed while creating new containers we need special space to be reserved. PVC does that for you in kubernetes architecture.
+We need to connect Postgres, Rails.logger, Redis with this volume later.
+
+Create postgresql
+
+```bash
+kubectl create secret generic pg-password --from-literal=password=mysecretpass
+kubectl create secret generic pg-username --from-literal=username=postgres
+
+kubectl create -f k8s/postgres.yml
+```
+
+
+
+### Ingress (Nginx)
+
+
+
+### Monitoring
+
+### Deploy
+
+Create sample app
+```bash
+rails new digitalocean-kubernetes-rails -T -d postgresql
+```
+
+### Auto Scaling
+
+
 
 ## Automated deploy task
 
 After pushing repository to git and providing deployment information in `lib/tasks/deploy.rake` file.
-
 You can automate deploying process.
 
 ```bash
@@ -144,13 +167,9 @@ $ rails deploy:production
 ## puma
 
 default puma's process = 1
-
 default puma's thread = 5
-
 default rails container count = 1
-
 default digital ocean's basic postgres database connection = 22 ~ 25
-
 makre sure :
 `process * thread * rails < db connection`
 
@@ -161,7 +180,6 @@ makre sure :
 [read](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion/issues/141)
 
 By default nginx-proxy's worker_processes are limited to only 1 process & 1024 connections
-
 If you are considering to scale up, it's recommended to allocate more processes to the proxy.
 
 ```bash
@@ -264,7 +282,7 @@ $ docker container ls -a
 $ docker rmi -f $(docker images -a | grep "none" | awk '{print $3}')
 $ docker rmi $(docker images -f "dangling=true" -q)
 ```
-## Destry all exited containers remove scientist name containers
+## Remove all exited and scientist named containers
 
 ```bash
 $ docker container rm $(docker container ls -aq --filter status=exited)
@@ -287,8 +305,8 @@ $ docker rm processid
 ```
 
 ## TODO
-- kubernetes
 
 ## References
+- Linked above
 - [Tailwind CSS Integration](https://github.com/justalever/kickoff_tailwind)
 - [Design Theme](https://www.tailwindtoolbox.com/templates/app-landing-page)
