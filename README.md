@@ -29,6 +29,7 @@ rails new project -T -d postgresql \
 * Rspec + FactoryBot setting for test code
 * Guard + LiveReload setting for hot reloading
 * Slack Message Notification for Exception
+* Tailwind CSS for styling
 
 ## Foreman start task
 
@@ -171,3 +172,7 @@ docker rm processid
 ## TODO
 - Zero downtime deployment with docker-compose.
 - 
+
+## References
+- [Tailwind CSS Integration](https://github.com/justalever/kickoff_tailwind)
+- [Design Theme](https://www.tailwindtoolbox.com/templates/app-landing-page)

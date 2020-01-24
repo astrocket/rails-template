@@ -44,7 +44,7 @@ end
 insert_into_file 'config/routes.rb', before: /^end/ do
   <<-'RUBY'
   
-  root 'home#index'
+  root 'react#index'
 
   %w( 404 422 500 ).each do |code|
     get code, :to => "errors#show", :code => code

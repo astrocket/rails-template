@@ -4,71 +4,6 @@ require "tmpdir"
 
 RAILS_REQUIREMENT = "~> 6.0.0".freeze
 
-def apply_template!
-
-  assert_minimum_rails_version
-  assert_postgresql
-  add_template_repository_to_source_path
-  ask_questions # Ask if using React
-
-  template "Gemfile.tt", force: true
-
-  copy_file "gitignore", ".gitignore", force: true
-  copy_file "Procfile", "Procfile", force: true
-  template "ruby-version.tt", ".ruby-version", force: true
-
-  run "gem install bundler -v '~> 2.0.0' --no-document --conservative"
-  run "bundle install"
-  git_commit("Gemfile setup")
-
-  rails_command("webpacker:install")
-  if use_react
-    rails_command("webpacker:install:react")
-    git_commit("Webpacker and React installed")
-    npms = ["axios", "hookrouter", "eslint-plugin-react-hooks --dev"]
-  else
-    rails_command("webpacker:install:stimulus")
-    git_commit("Webpacker and Stimulus installed")
-    npms = %w(axios stimulus @stimulus/polyfills)
-  end
-
-  run "yarn add #{npms.join(' ')}"
-  if use_react
-    run "yarn remove turbolinks"
-  end
-  git_commit("Yarn installed")
-
-  rails_command("generate rspec:install")
-  run "bundle exec guard init"
-  run "guard init livereload"
-  git_commit("Rspec & Guard setup")
-
-  apply 'app/template.rb'
-  run "rm app/assets/stylesheets/application.css"
-  git_commit("app/* setup")
-  apply 'lib/template.rb'
-  git_commit("lib/* setup")
-  apply 'spec/template.rb'
-  git_commit("spec/* setup")
-  apply 'docker/template.rb'
-  template 'docker-compose.yml'
-  git_commit("docker/* setup")
-  rails_command("db:create")
-  if use_active_admin
-    run "rails generate devise:install" 
-    rails_command("db:migrate")
-    run "rails generate active_admin:install AdminUser"
-    copy_file 'app/assets/stylesheets/active_admin.scss', force: true
-    git_commit("ActiveAdmin installed")
-  end
-  rails_command("db:migrate")
-  rails_command("db:seed")
-  apply 'config/template.rb'
-  git_commit("config/* setup")
-  copy_file 'README.md', force: true
-  git_commit("readme update")
-end
-
 def assert_minimum_rails_version
   requirement = Gem::Requirement.new(RAILS_REQUIREMENT)
   rails_version = Gem::Version.new(Rails::VERSION::STRING)
@@ -108,6 +43,7 @@ end
 
 def ask_questions
   use_react
+  use_tailwind
   use_active_admin
   use_slack_notification
   git_repo_url
@@ -142,6 +78,10 @@ def use_react
   @use_react == "yes"
 end
 
+def use_tailwind
+  @use_tailwind ||= ask_with_default("Would you like to use Tailswind.css? (if not default scss set will be installed)", :blue, "yes")
+  @use_tailwind == "yes"
+end
 
 def ask_with_default(question, color, default)
   return default unless $stdin.tty?
@@ -178,11 +118,78 @@ def git_push
   end
 end
 
-def run_bundle; end
-def run_webpack
-  puts set_color "All set!====================", :green
-  puts set_color "Start by running 'rails hot'", :green
-  puts set_color "============================", :green
+def apply_and_commit(applying)
+  apply applying
+  git_commit("Applied => #{applying}")
 end
 
-apply_template!
+def after_spring_stop
+  run "bin/spring stop"
+  yield if block_given?
+end
+
+assert_minimum_rails_version
+assert_postgresql
+add_template_repository_to_source_path
+ask_questions
+
+template "Gemfile.tt", force: true
+
+copy_file "gitignore", ".gitignore", force: true
+copy_file "Procfile", "Procfile", force: true
+template "ruby-version.tt", ".ruby-version", force: true
+
+run "gem install bundler -v '~> 2.0.0' --no-document --conservative"
+run "bundle install"
+
+git_commit("Gemfile setup")
+
+after_bundle do
+  if use_react
+    rails_command("webpacker:install:react")
+    npms = ["axios", "hookrouter", "eslint-plugin-react-hooks --dev"]
+  else
+    rails_command("webpacker:install:stimulus")
+    npms = %w(axios stimulus @stimulus/polyfills)
+  end
+
+  run "yarn add #{npms.join(' ')}"
+  if use_react
+    run "yarn remove turbolinks"
+  end
+  git_commit("Yarn installed")
+
+  run "bundle exec guard init"
+  run "guard init livereload"
+  git_commit("Guard setup")
+
+  apply_and_commit('app/template.rb')
+  apply_and_commit 'lib/template.rb'
+  after_spring_stop do
+    rails_command("generate rspec:install")
+  end
+  apply_and_commit 'spec/template.rb'
+  apply_and_commit 'docker/template.rb'
+
+  rails_command("db:setup")
+
+  if use_active_admin
+    run "rails generate devise:install"
+    rails_command("db:migrate")
+    run "rails generate active_admin:install AdminUser"
+    rails_command("db:migrate")
+    copy_file 'app/assets/stylesheets/active_admin.scss', force: true
+    git_commit("ActiveAdmin installed")
+  end
+
+  apply_and_commit 'config/template.rb'
+
+  copy_file 'README.md', force: true
+
+  git_commit("Project ready")
+
+  puts set_color "All set!=================================", :green
+  puts set_color "Start by running 'cd #{app_name} && rails hot'", :green
+  puts set_color "=========================================", :green
+end
+

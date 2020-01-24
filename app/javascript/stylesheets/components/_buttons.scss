@@ -1,0 +1,19 @@
+.btn {
+  @apply font-semibold text-sm py-2 px-4 rounded cursor-pointer no-underline;
+}
+
+.btn-default {
+  @apply bg-white border border-gray-400 text-gray-700;
+
+  &:hover, &:focus {
+    @apply border-gray-500;
+  }
+}
+
+.link {
+  @apply no-underline text-gray-700;
+
+  &:hover, &:focus {
+    @apply text-gray-700;
+  }
+}
