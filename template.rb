@@ -171,7 +171,8 @@ after_bundle do
   apply_and_commit 'spec/template.rb'
   apply_and_commit 'docker/template.rb'
 
-  rails_command("db:setup")
+  rails_command("db:create")
+  rails_command("db:migrate")
 
   if use_active_admin
     run "rails generate devise:install"
