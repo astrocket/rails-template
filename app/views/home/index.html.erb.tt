@@ -13,7 +13,7 @@
         <%= app_name %>
       </a>
       <div class="flex w-1/2 justify-end content-center">
-        <a href="/home"
+        <a href="/"
            class="inline-block text-blue-300 no-underline hover:text-indigo-800 hover:text-underline text-center h-10 p-2 md:h-auto md:p-4"
            data-tippy-content="@twitter_handle">
           react home

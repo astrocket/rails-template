@@ -2,7 +2,7 @@ import React from "react";
 import HomeIndex from "./pages/home/Index.jsx";
 
 const routes = {
-    "/home": () => <HomeIndex />,
+    "/": () => <HomeIndex />,
     "/about": () => <h2>About Page from React.js</h2>
 };
 
