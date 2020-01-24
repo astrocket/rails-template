@@ -147,7 +147,8 @@ git_commit("Gemfile setup")
 after_bundle do
   if use_react
     rails_command("webpacker:install:react")
-    npms = ["axios", "hookrouter", "eslint-plugin-react-hooks --dev"]
+    npms = ["axios", "hookrouter"]
+    run "yarn add eslint-plugin-react-hooks --dev"
   else
     rails_command("webpacker:install:stimulus")
     npms = %w(axios stimulus @stimulus/polyfills)
