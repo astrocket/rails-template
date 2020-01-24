@@ -3,7 +3,7 @@ import HomeIndex from "./pages/home/Index.jsx";
 
 const routes = {
     "/": () => <HomeIndex />,
-    "/about": () => <h2>About Page from React.js</h2>
+    "/about": () => <div className="container mx-auto">About Page from React.js</div>
 };
 
 export default routes;
