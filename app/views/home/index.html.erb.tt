@@ -38,8 +38,7 @@
   </div>
   <div class="h-screen pb-14 bg-right bg-cover">
     <div class="container mx-auto">
-      Rails server-side rendered page. <br>
-      When do we need this way?
+      Rails server-side rendered page.
     </div>
   </div>
 </div>

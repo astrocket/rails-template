@@ -20,11 +20,11 @@ function Index() {
           <div className="flex flex-col w-full xl:w-2/5 justify-center lg:items-start overflow-y-hidden">
               <h1
                 className="my-4 text-3xl md:text-5xl text-purple-800 font-bold leading-tight text-center md:text-left slide-in-bottom-h1">
-                  Astro
+                  rails-template
               </h1>
               <p
                 className="leading-normal text-base md:text-2xl mb-8 text-center md:text-left slide-in-bottom-subtitle">
-                  Live in the future and build what seems interesting.
+                  Hello World
               </p>
               <p className="text-red-400 font-bold pb-8 lg:pb-6 text-center md:text-left fade-in">Rails: {helloWorld}</p>
               <p className="text-blue-400 font-bold pb-8 lg:pb-6 text-center md:text-left fade-in">React: {React.version} ({process.env.NODE_ENV})</p>
