@@ -39,7 +39,6 @@ if use_tailwind
   run "mkdir -p app/javascript/stylesheets"
   run "mkdir -p app/javascript/stylesheets/components"
 
-  copy_file "app/javascript/packs/stylesheets.js"
   copy_file "app/javascript/stylesheets/application.scss"
   copy_file "app/javascript/stylesheets/tailwind.config.js"
   copy_file "app/javascript/stylesheets/components/_buttons.scss"
