@@ -25,8 +25,7 @@ insert_into_file 'config/routes.rb', before: /^end/ do
   RUBY
 end
 
-insert_into_file 'config/routes.rb', before: /^end/ do
-  if use_react
+insert_into_file 'config/routes.rb', before: /^end/ do  
   <<-'RUBY'
   
   scope :app do
@@ -38,8 +37,7 @@ insert_into_file 'config/routes.rb', before: /^end/ do
     get '/' => 'react#index', as: :react # react_path
   end
   RUBY
-  end
-end
+end if use_react
 
 insert_into_file 'config/routes.rb', before: /^end/ do
   <<-'RUBY'
