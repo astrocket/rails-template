@@ -25,7 +25,8 @@ insert_into_file 'config/routes.rb', before: /^end/ do
   RUBY
 end
 
-insert_into_file 'config/routes.rb', before: /^end/ do  
+insert_into_file 'config/routes.rb', before: /^end/ do
+  if use_react
   <<-'RUBY'
   
   scope :app do
@@ -36,13 +37,18 @@ insert_into_file 'config/routes.rb', before: /^end/ do
   scope '/:path', constraints: { path: /(?!app|api).+/ } do
     get '/' => 'react#index', as: :react # react_path
   end
+
+  root 'react#index'
   RUBY
-end if use_react
+  else
+  <<-'RUBY'
+  root 'home#index'
+  RUBY
+  end
+end
 
 insert_into_file 'config/routes.rb', before: /^end/ do
   <<-'RUBY'
-  
-  root 'react#index'
 
   %w( 404 422 500 ).each do |code|
     get code, :to => "errors#show", :code => code

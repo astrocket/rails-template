@@ -18,6 +18,7 @@ copy_file 'app/javascript/utils/helpers.js'
 if use_react
   copy_file 'app/javascript/packs/application.js', force: true
   copy_file 'app/javascript/packs/routes.js'
+  copy_file 'app/javascript/packs/stylesheet.js'
   copy_file 'app/javascript/packs/App.jsx'
   copy_file 'app/javascript/packs/pages/home/Index.jsx'
   template 'app/javascript/packs/components/Navigation.jsx.tt'
@@ -28,9 +29,14 @@ if use_react
   copy_file 'app/controllers/api/home_controller.rb'
 
   copy_file 'app/assets/javascripts/application.js', force: true
-  template 'app/views/layouts/application.html.erb.tt', force: true
 else
   copy_file 'app/javascript/controllers/index.js', force: true
+end
+
+insert_into_file 'app/views/layouts/application.html.erb', before: "</head>" do
+  <<-ERB
+  <%= stylesheet_pack_tag 'stylesheet', 'data-turbolinks-track': 'reload' %>
+  ERB
 end
 
 if use_tailwind
@@ -53,7 +59,6 @@ else
   copy_file 'app/assets/stylesheets/designs/_base.scss'
 end
 
-remove_file "app/assets/stylesheets/application.css"
 remove_file "app/javascript/packs/hello_react.jsx"
 
 copy_file 'app/jobs/http_post_job.rb'
