@@ -81,6 +81,8 @@ Set up a seperate [Nginx-Proxy docker container](https://github.com/evertramos/d
 git clone https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion.git
 cd docker-compose-letsencrypt-nginx-proxy-companion
 mv .env.sample .env
+// uncomment below from your own .env
+// USE_NGINX_CONF_FILES=true
 ./start.sh
 ```
 
