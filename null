@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>마스크구매</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.dropotron.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="css/skel.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-wide.css" />
+		</noscript>
+		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div class="wrapper style1">
+
+				<!-- Header -->
+					<div id="header" class="skel-panels-fixed">
+						<div id="logo">
+							<h1><a href="index.html">착한 마스크</a></h1>
+						</div>
+						<nav id="nav">
+							<ul>
+								<li class="active"><a href="index.html">마스크구매</a></li>
+								<li class="active"><a href="coronasite.html">코로나사이트</a></li>
+								<!--
+								<li><a href="left-sidebar.html">Left Sidebar</a></li>
+								<li><a href="right-sidebar.html">Right Sidebar</a></li>
+								<li><a href="no-sidebar.html">No Sidebar</a></li>
+								-->
+							</ul>
+						</nav>
+					</div>
+
+				<!-- Banner -->
+					<div id="banner" class="container">
+						<section>
+							<p>이 서비스는 <strong>착한 마스크</strong> 구매 링크를 제공해줍니다. <br>
+							 착한 마스크 판매자 리스트에 기반하여 제작했습니다. <br>
+							 빠르게 업데이트를 통해 정보를 전달하겠습니다.</p>
+							<a href="maskInfo.html" class="button medium">올바른 마스크 정보</a>
+						</section>
+					</div>
+
+				<!-- Extra -->
+					<div id="extra">
+						<div class="container">
+							<div class="row no-collapse-1">
+								<section class="4u"> <a href="#" class="image featured"><img src="images/pic01.jpg" alt=""></a>
+									<div class="box">
+										<h6>상공양행</h6>
+										<p>KF94 대형 50매 27,500 <br>시간대 : 09:30 ~ 17:00</p>										
+										<a href="https://smartstore.naver.com/sangkong" class="button">구매하기</a> 
+									</div>
+								</section>
+								<section class="4u"> <a href="#" class="image featured"><img src="images/pic02.jpg" alt=""></a>
+									<div class="box">
+										<h6>아에르</h6>
+										<p>KF94 대형 10매 11,900  <br>시간대 : 09:45 ~ </p>
+										<a href="https://smartstore.naver.com/aer-shop" class="button">구매하기</a> 
+									</div>
+								</section>
+								<section class="4u"> <a href="#" class="image featured"><img src="images/pic03.jpg" alt=""></a>
+									<div class="box">
+										<h6>닥터퓨리</h6>
+										<p>KF94 대형 20매 13,900  <br>시간대 : 10:00 ~ </p>
+										<a href="https://smartstore.naver.com/mfbshop" class="button">구매하기</a> 
+									</div>
+								</section>
+							</div>
+							<div class="row no-collapse-1">
+								<section class="4u"> <a href="#" class="image featured"><img src="images/pic04.jpg" alt=""></a>
+									<div class="box">
+										<h6>국대마스크</h6>
+										<p>KF94 대형 20매 19,800  <br>시간대 : 10:00 ~ </p>
+										<a href="https://smartstore.naver.com/korea-mask" class="button">구매하기</a> 
+									</div>
+								</section>
+								<section class="4u"> <a href="#" class="image featured"><img src="images/pic05.jpg" alt=""></a>
+									<div class="box">
+										<h6>에티카</h6>
+										<p>KF94 대형 30매 29,900  <br>시간대 : 상시</p>
+										<a href="https://smartstore.naver.com/etiqa" class="button">구매하기</a> 
+									</div>
+								</section>
+								<section class="4u"> <a href="#" class="image featured"><img src="images/pic06.jpg" alt=""></a>
+									<div class="box">
+										<h6>공감네트웍스</h6>
+										<p>KF94 대형 10매 9,900 <br>시간대 : 상시</p>
+										<a href="https://smartstore.naver.com/gonggami" class="button">구매하기</a> 
+									</div>
+								</section>
+							</div>
+							<div class="row no-collapse-1">
+								<section class="4u"> <a href="#" class="image featured"><img src="images/pic07.jpg" alt=""></a>
+									<div class="box">
+										<h6>금아멘탈</h6>
+										<p>일회용마스크 50매 9,900 <br>시간대 : 상시</p>
+										<a href="https://smartstore.naver.com/kumaelectron" class="button">구매하기</a> 
+									</div>
+								</section>
+								<section class="4u"> <a href="#" class="image featured"><img src="images/pic08.jpg" alt=""></a>
+									<div class="box">
+										<h6>라오메뜨</h6>
+										<p>KF94 대형 5매 6,250 <br>시간대 : 상시</p>
+										<a href="https://store.kakao.com/laomete/products/55563134" class="button">구매하기</a> 
+									</div>
+								</section>
+								<section class="4u"> <a href="#" class="image featured"><img src="images/pic09.jpg" alt=""></a>
+									<div class="box">
+										<h6>웰킵스몰</h6>
+										<p>KF94 대형 25매 24,500  <br>시간대 : 10:00 ~ </p>
+										<a href="http://www.welkeepsmall.com/" class="button">구매하기</a> 
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+
+	</div>
+
+	<!-- Copyright -->
+		<div id="copyright">
+			<div class="container">
+				<div class="copyright">
+					<p>Copyright ©findMask.dev 2020<br>
+					이메일로 제보 & 잘못된 정보 정정 요청 받습니다.<br>
+					Contact : <a href="mailto:findmask.dev@gmail.com">findmask.dev@gmail.com</a> </p>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
