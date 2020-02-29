@@ -188,6 +188,8 @@ after_bundle do
 
   copy_file 'README.md', force: true
 
+  apply("cd #{app_name} && yarn")
+
   git_commit("Project ready")
 
   puts set_color "All set!=================================", :green
