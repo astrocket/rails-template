@@ -143,6 +143,17 @@ $ rails deploy:production
 
 ## puma
 
+default puma's process = 1
+
+default puma's thread = 5
+
+default rails container count = 1
+
+default digital ocean's basic postgres database connection = 22 ~ 25
+
+makre sure :
+`process * thread * rails < db connection`
+
 [read](https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#process-count-value)
 
 ## nginx-proxy's worker_processes
@@ -224,15 +235,14 @@ $ sudo nano /etc/logrotate.d/docker-container
 
 ## To monitor container's resource usage.
 
+```bash
+$ docker stats
+```
 Metric percentage of each cpu usage is `per cpu` not `per container`
 
 Which means your container will not die when it approaches 100%.
 
 it only dies when container can use only 1 cpu OR container's resouce cpu is limited
-
-```bash
-$ docker stats
-```
 
 ## To see your live container log
 
