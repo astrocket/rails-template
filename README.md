@@ -86,7 +86,7 @@ bundle exec rspec
 # Deploy
 
 ## docker & docker-compose
-After installing [docker](https://docs.docker.com/install/) & [docker-compose](https://docs.docker.com/compose/install/) in your host machine.
+install [docker](https://docs.docker.com/install/) & [docker-compose](https://docs.docker.com/compose/install/) in your host machine.
 
 ## Prepare Nginx-Proxy & SSL auto generator
 
@@ -105,11 +105,11 @@ $ mv .env.sample .env
 $ ./start.sh
 ```
 
-## Prepare Nginx-Proxy & SSL auto generator
+## create application images
 
-Clone your repository to host machine and build docker-compose.
+Clone your repository to host machine and build images through docker-compose.
 
-or you can use separate Image hosting service like [docker hub](https://hub.docker.com/)
+or you can use independent Image hosting service like [docker hub](https://hub.docker.com/) and refer them in `docker-compose.yml`
 
 ```bash
 $ git clone http://github.com/username/your_own_rails_repository
@@ -117,7 +117,10 @@ $ docker-compose build
 $ docker-compose up -d
 ```
 
-Make sure your production database table is created before deploy(it doesn't support db:create yet)
+## prepare production database table
+
+this project doesn't support db:create cmd yet.
+Make sure your production database table is created before deploy.
 or you can have separate database hosting (recommended)
 
 ```bash
@@ -129,7 +132,8 @@ $ createdb project_production;
 ## Automated deploy task
 
 After pushing repository to git and providing deployment information in `lib/tasks/deploy.rake` file.
-You can automate above process.
+
+You can automate deploying process.
 
 ```bash
 $ rails deploy:production
@@ -216,11 +220,9 @@ $ sudo nano /etc/logrotate.d/docker-container
 }
 ```
 
----
+# Docker CMDs
 
-## Docker CMDs
-
-To monitor container's resource usage.
+## To monitor container's resource usage.
 
 Metric percentage of each cpu usage is `per cpu` not `per container`
 
@@ -232,33 +234,33 @@ it only dies when container can use only 1 cpu OR container's resouce cpu is lim
 $ docker stats
 ```
 
-To see your live container log
+## To see your live container log
 
 ```bash
 $ docker ps
 $ docker logs -f --tail 5 processid
 ```
 
-Check images / containers
+## Check images / containers
 
 ```bash
 $ docker images -a
 $ docker container ls -a
 ```
 
-Remove all abandonded images
+## Remove all abandonded images
 
 ```bash
 $ docker rmi -f $(docker images -a | grep "none" | awk '{print $3}')
 $ docker rmi $(docker images -f "dangling=true" -q)
 ```
-Destry all exited containers remove scientist name containers
+## Destry all exited containers remove scientist name containers
 
 ```bash
 $ docker container rm $(docker container ls -aq --filter status=exited)
 ```
 
-Prune (be careful)
+## Prune (be careful)
 
 ```bash
 $ docker container prune
@@ -267,7 +269,7 @@ $ docker network prune
 $ docker volume prune
 ```
 
-Stop and delete specific container
+## Stop and delete specific container
 
 ```bash
 $ docker stop processid
@@ -276,7 +278,7 @@ $ docker rm processid
 
 ## TODO
 - Zero downtime deployment with docker-compose.
-- 
+- kubernetes
 
 ## References
 - [Tailwind CSS Integration](https://github.com/justalever/kickoff_tailwind)
