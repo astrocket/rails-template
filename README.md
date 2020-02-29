@@ -277,7 +277,6 @@ $ docker rm processid
 ```
 
 ## TODO
-- Zero downtime deployment with docker-compose.
 - kubernetes
 
 ## References
