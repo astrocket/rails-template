@@ -160,7 +160,7 @@ makre sure :
 
 [read](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion/issues/141)
 
-By default nginx-proxy's worker_processes are limited to only 1 process.
+By default nginx-proxy's worker_processes are limited to only 1 process & 1024 connections
 
 If you are considering to scale up, it's recommended to allocate more processes to the proxy.
 
@@ -179,7 +179,7 @@ $ echo "docker-compose.override.yml" >> .gitignore
 version: '3'
 services:
   nginx-web:
-    command: /bin/bash -c "sed -i 's/worker_processes  1;/worker_processes  2;/' /etc/nginx/nginx.conf && nginx -g \"daemon off;\""
+    command: /bin/bash -c "ln -sf /dev/null /var/log/nginx/access.log &&sed -i 's/worker_processes  1;/worker_processes  3;/' /etc/nginx/nginx.conf && sed -i 's/worker_connections  1024;/worker_connections  98304;/' /etc/nginx/nginx.conf && nginx -g \"daemon off;\""
 
 // rebuild your proxy container
 $ docker-compose up -d --build nginx-web

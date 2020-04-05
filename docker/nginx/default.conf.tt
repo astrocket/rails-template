@@ -1,0 +1,36 @@
+server {
+  listen       80;
+  server_name localhost;
+  
+  proxy_buffers 64 16k;
+  proxy_max_temp_file_size 1024m;
+  proxy_connect_timeout 5s;
+  proxy_send_timeout 10s;
+  proxy_read_timeout 10s;
+  root $RAILS_ROOT/public;
+  
+  location ~ ^assets/ {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+
+  location ~ ^packs/ {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+
+  location / {
+    try_files $uri @rails_app;
+  }
+
+  location @rails_app {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_pass http://rails:3000;
+    access_log $RAILS_ROOT/log/nginx.access.log;
+    error_log $RAILS_ROOT/log/nginx.error.log;
+  }
+}
