@@ -156,6 +156,7 @@ rails new digitalocean-kubernetes-rails -T -d postgresql
 ## Automated deploy task
 
 After pushing repository to git and providing deployment information in `lib/tasks/deploy.rake` file.
+
 You can automate deploying process.
 
 ```bash
@@ -167,9 +168,13 @@ $ rails deploy:production
 ## puma
 
 default puma's process = 1
+
 default puma's thread = 5
+
 default rails container count = 1
+
 default digital ocean's basic postgres database connection = 22 ~ 25
+
 makre sure :
 `process * thread * rails < db connection`
 
@@ -180,6 +185,7 @@ makre sure :
 [read](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion/issues/141)
 
 By default nginx-proxy's worker_processes are limited to only 1 process & 1024 connections
+
 If you are considering to scale up, it's recommended to allocate more processes to the proxy.
 
 ```bash
