@@ -16,7 +16,7 @@ copy_file 'app/javascript/utils/api.js'
 copy_file 'app/javascript/utils/helpers.js'
 
 if use_react
-  copy_file 'app/javascript/packs/application.js', force: true
+  template 'app/javascript/packs/application.react.js.tt', 'app/javascript/packs/application.js', force: true
   copy_file 'app/javascript/packs/routes.js'
   copy_file 'app/javascript/packs/stylesheet.js'
   copy_file 'app/javascript/packs/App.jsx'
@@ -30,6 +30,7 @@ if use_react
 
   copy_file 'app/assets/javascripts/application.js', force: true
 else
+  template 'app/javascript/packs/application.stimulus.js.tt', 'app/javascript/packs/application.js', force: true
   copy_file 'app/javascript/controllers/index.js', force: true
 end
 

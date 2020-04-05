@@ -1,4 +1,3 @@
-<% if use_react %>
 <div class="leading-normal tracking-normal text-gray-900">
   <div class="w-full container mx-auto p-6">
     <div class="w-full flex items-center justify-between">
@@ -18,6 +17,7 @@
            data-tippy-content="@twitter_handle">
           react home
         </a>
+        <% if use_react %>
         <a href="/about"
            class="inline-block text-blue-300 no-underline hover:text-indigo-800 hover:text-underline text-center h-10 p-2 md:h-auto md:p-4"
            data-tippy-content="@twitter_handle">
@@ -28,6 +28,7 @@
            data-tippy-content="@twitter_handle">
           rails ssr
         </a>
+        <% end %>
         <a
           class="inline-block text-blue-300 no-underline hover:text-indigo-800 hover:text-underline text-center h-10 p-2 md:h-auto md:p-4"
           data-tippy-content="@twitter_handle" href="https://github.com/astrocket/rails-template">
@@ -42,6 +43,4 @@
     </div>
   </div>
 </div>
-<% else %>
-  <a href="/">Home</a>
-<% end %>
+
