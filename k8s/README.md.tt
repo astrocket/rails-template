@@ -141,14 +141,6 @@ kubectl create -f k8s/cluster/lets_encrypt_issuer.yaml
 
 [read](https://webcloudpower.com/helm-rails-static-files-path/)
 
-Create application level nginx's(different from ingress nginx) config-map, where we serve static files, distribute app traffic to puma replicas.
-
-(It will be used when deploying k8s/demo.yaml)
-
-```bash
-kubectl apply -f k8s/project/application-nginx-conf.yaml
-```
-
 Create Demo Ingress, Service, Pod. (to test configuration)
 
 ```bash
@@ -179,42 +171,13 @@ kubectl delete -f k8s/demo.yaml
 
 ### Deploying Production App
 
+`k8s/project/application-nginx-conf.yaml` creates application level nginx's(*different from ingress-nginx*) config-map, where we serve static files, distribute app traffic to puma replicas.
+
+(It will be used when deploying k8s/app.yaml)
+
 ```bash
 kubectl apply -f k8s/project/application-nginx-conf.yaml
 kubectl apply -f k8s/app.yaml
 kubectl apply -f k8s/ingress.yaml
 ... etc
 ```
-
-## Tuning
-
-### Ingress
-
-To make your service scalable, you have to tune ingress-nginx as your needs.
-
-https://kubernetes.github.io/ingress-nginx/
-
-As you can read out from guide above, you have 3 ways to tune ingress-nginx.
-
-**ConfigMap** : Global options (like worker_process, worker_connection, proxy-body-size ..)
-
-**Annotation** : Per ingress options (like ssl, proxy-body-size..)
-
-**Custom Template** : Using file
-
-If you configure the same option using Annotation and ConfigMap, Annotation will override ConfigMap. (ex. proxy-body-size)
-
-https://github.com/nginxinc/kubernetes-ingress/tree/master/examples
-
-> example of scalable websocket server architecture
-
-```bash
-ws.<%= app_domain %> ->
-LoadBalancer ->
-Websocket supportive Nginx Ingress with SSL ->
-Anycable Go server ->
-Anycable RPC rails server
-```
-
-### Auto Scaling
-- TODO

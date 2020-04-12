@@ -17,7 +17,12 @@ spec:
   selector:
     matchLabels:
       app: <%= k8s_name %>-web
-  replicas: 1
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
   template:
     metadata:
       labels:

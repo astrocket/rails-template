@@ -123,62 +123,33 @@ make sure :
 
 [read](https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#process-count-value)
 
-## nginx-proxy's worker_processes
+## Ingress
 
-[read](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion/issues/141)
+To make your service scalable, you have to tune ingress-nginx as your needs.
 
-By default nginx-proxy's worker_processes are limited to only 1 process & 1024 connections
+https://kubernetes.github.io/ingress-nginx/
 
-If you are considering to scale up, it's recommended to allocate more processes to the proxy.
+As you can read out from guide above, you have 3 ways to tune ingress-nginx.
 
-```bash
-// Go to your Nginx-Proxy directory
-$ cd docker-compose-letsencrypt-nginx-proxy-companion
+**ConfigMap** : Global options for every ingress (like worker_process, worker_connection, proxy-body-size ..)
 
-// Create 'docker-compose.override.yml' file for custom compose option.
-// see 'https://docs.docker.com/compose/extends' to understand override file.
-$ nano docker-compose.override.yml
+**Annotation** : Per ingress options (like ssl, proxy-body-size..)
 
-// Also add 'docker-compose.override.yml' to '.gitignore'
-$ echo "docker-compose.override.yml" >> .gitignore
+**Custom Template** : Using file
 
-// Paste the below to 'docker-compose.override.yml'
-version: '3'
-services:
-  nginx-web:
-    command: /bin/bash -c "ln -sf /dev/null /var/log/nginx/access.log &&sed -i 's/worker_processes  1;/worker_processes  3;/' /etc/nginx/nginx.conf && sed -i 's/worker_connections  1024;/worker_connections  98304;/' /etc/nginx/nginx.conf && nginx -g \"daemon off;\""
+If you configure the same option using Annotation and ConfigMap, Annotation will override ConfigMap. (ex. proxy-body-size)
 
-// rebuild your proxy container
-$ docker-compose up -d --build nginx-web
+https://github.com/nginxinc/kubernetes-ingress/tree/master/examples
+
+> example of scalable websocket server architecture
+
+```text
+ws.example.com ->
+LoadBalancer ->
+Websocket supportive Nginx Ingress with SSL (with enough worker_connections) ->
+Anycable Go server ->
+Anycable RPC rails server
 ```
-
-## Scale Containers
-[read](https://pspdfkit.com/blog/2018/how-to-use-docker-compose-to-run-multiple-instances-of-a-service-in-development/)
-
-```bash
-$ docker-compose up -d --scale rails=5
-```
-
-## Limit CPU/Memory usage per Container
-
-By default container can access to all cpus and memories.
-
-you can limit resources per container with options.
-
-However docker-compose 3 format does not support resource limit out of box.
-
-If you want to enable resource limit options, you have two choices.
-1. Use docker swarm.
-2. Use `--compatibility` option which translates 3.0 syntax to 2.0 syntax before dockerize
-
-Github histories about this issue
-- https://github.com/docker/compose/issues/4513
-- https://github.com/docker/compose/pull/5684
-- https://github.com/readthedocs/readthedocs.org/pull/6295
-
-for option 2. => [read](https://nickjanetakis.com/blog/docker-tip-78-using-compatibility-mode-to-set-memory-and-cpu-limits)
-
-
 
 ## Managing container logs through Logrotate
 [read](https://sandro-keil.de/blog/logrotate-for-docker-container/)
@@ -198,60 +169,6 @@ $ sudo nano /etc/logrotate.d/docker-container
 }
 ```
 
-# Docker CMDs
-
-## To monitor container's resource usage.
-
-```bash
-$ docker stats
-```
-Metric percentage of each cpu usage is `per cpu` not `per container`
-
-Which means your container will not die when it approaches 100%.
-
-it only dies when container can use only 1 cpu OR container's resouce cpu is limited
-
-## To see your live container log
-
-```bash
-$ docker ps
-$ docker logs -f --tail 5 processid
-```
-
-## Check images / containers
-
-```bash
-$ docker images -a
-$ docker container ls -a
-```
-
-## Remove all abandonded images
-
-```bash
-$ docker rmi -f $(docker images -a | grep "none" | awk '{print $3}')
-$ docker rmi $(docker images -f "dangling=true" -q)
-```
-## Remove all exited and scientist named containers
-
-```bash
-$ docker container rm $(docker container ls -aq --filter status=exited)
-```
-
-## Prune (be careful)
-
-```bash
-$ docker container prune
-$ docker image prune
-$ docker network prune
-$ docker volume prune
-```
-
-## Stop and delete specific container
-
-```bash
-$ docker stop processid
-$ docker rm processid
-```
 
 ## TODO
 
