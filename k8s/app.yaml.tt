@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: <%= k8s_name %>-web-svc
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: <%= k8s_name %>-web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <%= k8s_name %>-web
+spec:
+  selector:
+    matchLabels:
+      app: <%= k8s_name %>-web
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: <%= k8s_name %>-web
+    spec:
+      containers:
+        - name: app
+          image: hashicorp/http-echo
+          args:
+            - "-text=Hello <%= k8s_name %>"
+          ports:
+            - containerPort: 3000
+        - name: nginx
+          image: nginx:1.17-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /assets
+              name: assets
+              readOnly: true
+            - mountPath: /etc/nginx/nginx.conf
+              name: nginx-conf
+              subPath: nginx.conf
+              readOnly: true
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: <%= k8s_name %>-nginx-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: assets
+          emptyDir: {}

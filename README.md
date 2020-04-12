@@ -87,6 +87,7 @@ bundle exec rspec
 
 ## Kubernetes, LoadBalancer, Let's Encrypt, Scaling
 [k8s/README.md](k8s/README.md)
+[deploy yaml](https://webcloudpower.com/helm-rails-static-files-path/)
 
 ### Databases
 
@@ -124,7 +125,7 @@ default rails container count = 1
 
 default digital ocean's basic postgres database connection = 22 ~ 25
 
-makre sure :
+make sure :
 `process * thread * rails < db connection`
 
 [read](https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#process-count-value)

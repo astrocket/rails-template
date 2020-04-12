@@ -207,6 +207,8 @@ kubectl get pods --namespace cert-manager
 
 ### Create SSL Issuer
 
+> k8s/lets_encrypt_issuer.yaml
+
 ```yaml
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
@@ -230,7 +232,7 @@ spec:
 ```
 
 ```bash
-kubectl create -f k8s/prod_issuer.yaml
+kubectl create -f k8s/lets_encrypt_issuer.yaml
 ```
 
 ### Update echo_ingress.yaml to use this new Issuer
