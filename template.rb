@@ -175,6 +175,7 @@ after_bundle do
   end
   apply_and_commit 'spec/template.rb'
   apply_and_commit 'docker/template.rb'
+  apply_and_commit('k8s/template.rb')
 
   rails_command("db:create")
   rails_command("db:migrate")
