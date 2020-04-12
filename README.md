@@ -89,19 +89,12 @@ bundle exec rspec
 [k8s/README.md](k8s/README.md)
 [deploy yaml](https://webcloudpower.com/helm-rails-static-files-path/)
 
-### Databases
+## Databases
 
 You can either
 
-1. set up your own postgres / redis deployment
-2. use managed database from digital ocean
-
-### Deploy
-
-Create sample app
-```bash
-rails new digitalocean-kubernetes-rails -T -d postgresql
-```
+1. set up your own postgres / redis deployment Pod
+2. use managed database from digital ocean and use Connection String
 
 ## Automated deploy task
 

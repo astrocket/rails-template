@@ -34,14 +34,12 @@ doctl kubernetes cluster kubeconfig save example-cluster-01
 # kubectl config current-context
 ```
 
-## Ingress
-Following ingress document is a summary of digital ocean's official document.
+## Cluster set up
+
+Following document is a summary of digital ocean's [official doc](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes).
 + I modified LoadBalancer part to fix the issue from generating Let's Encrypt certification.
 + upgraded resource versions
-+ add demo nginx-rails app
-
-[official doc](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes) / 
-[cert-manager issue](https://github.com/jetstack/cert-manager/issues/2759)
++ fixed some [cert-manager issue](https://github.com/jetstack/cert-manager/issues/2759)
 
 ### Install mandatory resources
 ```bash
@@ -49,10 +47,11 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 ```
 
 ### Install load balancer service
-this step, kubernetes will automatically ask digital ocean's LoadBalancer.
-If you don't have any LoadBalancer unit, it will be automatically create one. (also start charging you)
 
-> k8s/load_balancer.yaml
+This step, kubernetes will automatically ask digital ocean's LoadBalancer.
+If you don't have any LoadBalancer unit, it will automatically create one. (also start charging you)
+
+> k8s/cluster/load_balancer.yaml
 ```yaml
 kind: Service
 apiVersion: v1
@@ -78,8 +77,9 @@ spec:
       protocol: TCP
       targetPort: https
 ```
+
 ```bash
-kubectl apply -f k8s/load_balancer.yaml
+kubectl apply -f k8s/cluster/load_balancer.yaml
 ```
 
 ### Confirm that the Ingress Controller Pods have started
@@ -105,7 +105,9 @@ kubectl get pods --namespace cert-manager
 
 ### Create SSL Issuer
 
-> k8s/lets_encrypt_issuer.yaml
+You only need one Issuer per cluster. You can reuse for other projects.
+
+> k8s/cluster/lets_encrypt_issuer.yaml
 
 ```yaml
 apiVersion: cert-manager.io/v1alpha2
@@ -130,18 +132,21 @@ spec:
 ```
 
 ```bash
-kubectl create -f k8s/lets_encrypt_issuer.yaml
+kubectl create -f k8s/cluster/lets_encrypt_issuer.yaml
 ``` 
+
+## Deploy
 
 ### Deploying Demo App
 
 [read](https://webcloudpower.com/helm-rails-static-files-path/)
 
-Create service nginx's config-map, where we serve static files, distribute app traffic to replicas.
-It will be referenced from k8s/demo.yaml
+Create application level nginx's(different from ingress nginx) config-map, where we serve static files, distribute app traffic to puma replicas.
+
+(It will be used when deploying k8s/demo.yaml)
 
 ```bash
-kubectl apply -f k8s/config-maps/nginx-conf.yaml
+kubectl apply -f k8s/project/application-nginx-conf.yaml
 ```
 
 Create Demo Ingress, Service, Pod. (to test configuration)
@@ -164,7 +169,7 @@ Events:
   Normal  Issued        5m   cert-manager  Certificate issued successfully
 ```
 
-To debug cert-manager [read](https://cert-manager.io/docs/faq/acme/).
+Problem with SSL? => debug cert-manager [read](https://cert-manager.io/docs/faq/acme/).
 
 To delete all demo resources
 
@@ -175,10 +180,40 @@ kubectl delete -f k8s/demo.yaml
 ### Deploying Production App
 
 ```bash
-kubectl apply -f k8s/config-maps/nginx-conf.yaml
+kubectl apply -f k8s/project/application-nginx-conf.yaml
 kubectl apply -f k8s/app.yaml
 kubectl apply -f k8s/ingress.yaml
 ... etc
+```
+
+## Tuning
+
+### Ingress
+
+To make your service scalable, you have to tune ingress-nginx as your needs.
+
+https://kubernetes.github.io/ingress-nginx/
+
+As you can read out from guide above, you have 3 ways to tune ingress-nginx.
+
+**ConfigMap** : Global options (like worker_process, worker_connection, proxy-body-size ..)
+
+**Annotation** : Per ingress options (like ssl, proxy-body-size..)
+
+**Custom Template** : Using file
+
+If you configure the same option using Annotation and ConfigMap, Annotation will override ConfigMap. (ex. proxy-body-size)
+
+https://github.com/nginxinc/kubernetes-ingress/tree/master/examples
+
+> example of scalable websocket server architecture
+
+```bash
+ws.<%= app_domain %> ->
+LoadBalancer ->
+Websocket supportive Nginx Ingress with SSL ->
+Anycable Go server ->
+Anycable RPC rails server
 ```
 
 ### Auto Scaling
