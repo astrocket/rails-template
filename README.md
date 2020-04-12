@@ -85,41 +85,8 @@ bundle exec rspec
 
 # Deploy
 
-## Production deploy process
-
-### Create New Kubernetes cluster from DigitalOcean
-
-https://cloud.digitalocean.com/kubernetes
-
-### Install Kubectl
-
-The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters. ([link](https://kubernetes.io/docs/tasks/tools/install-kubectl/))
-```bash
-brew install kubectl
-# kubectl version
-```
-
-### Connect your cluster
-
-Use the name of your cluster instead of example-cluster-01 in the following command.
-
-Generate API Token & Paste it ([link](https://cloud.digitalocean.com/account/api/tokens))
-```bash
-DigitalOcean access token: your_DO_token
-```
-
-Authenticate through doctl command (doctl is a DigitalOcean's own cli tool [link](https://github.com/digitalocean/doctl))
-```bash
-brew install doctl
-doctl auth init
-# paste your_DO_token
-```
-
-Add your cluster to local config (you can get your cluster's name from DO's dashboard)
-```bash
-doctl kubernetes cluster kubeconfig save example-cluster-01
-# kubectl config current-context
-```
+## Kubernetes, LoadBalancer, Let's Encrypt, Scaling
+[k8s/README.md](k8s/README.md)
 
 ### Databases
 
@@ -128,22 +95,12 @@ You can either
 1. set up your own postgres / redis deployment
 2. use managed database from digital ocean
 
-### Ingress (Nginx)
-
-
-
-### Monitoring
-
 ### Deploy
 
 Create sample app
 ```bash
 rails new digitalocean-kubernetes-rails -T -d postgresql
 ```
-
-### Auto Scaling
-
-
 
 ## Automated deploy task
 
