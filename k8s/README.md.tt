@@ -38,86 +38,10 @@ doctl kubernetes cluster kubeconfig save example-cluster-01
 Following ingress document is a summary of digital ocean's official document.
 + I modified LoadBalancer part to fix the issue from generating Let's Encrypt certification.
 + upgraded resource versions
-[official doc](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes)
++ add demo nginx-rails app
+
+[official doc](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes) / 
 [cert-manager issue](https://github.com/jetstack/cert-manager/issues/2759)
-
-### Prepare some fake Apps
-> k8s/echo1.yaml
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: echo1
-spec:
-  ports:
-    - port: 80
-      targetPort: 5678
-  selector:
-    app: echo1
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: echo1
-spec:
-  selector:
-    matchLabels:
-      app: echo1
-  replicas: 2
-  template:
-    metadata:
-      labels:
-        app: echo1
-    spec:
-      containers:
-        - name: echo1
-          image: hashicorp/http-echo
-          args:
-            - "-text=echo1"
-          ports:
-            - containerPort: 5678
-```
-
-> k8s/echo2.yaml
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: echo2
-spec:
-  ports:
-    - port: 80
-      targetPort: 5678
-  selector:
-    app: echo2
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: echo2
-spec:
-  selector:
-    matchLabels:
-      app: echo2
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: echo2
-    spec:
-      containers:
-        - name: echo2
-          image: hashicorp/http-echo
-          args:
-            - "-text=echo2"
-          ports:
-            - containerPort: 5678
-```
-
-```bash
-kubectl apply -f k8s/echo1.yaml
-kubectl apply -f k8s/echo2.yaml
-```
 
 ### Install mandatory resources
 ```bash
@@ -126,7 +50,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 
 ### Install load balancer service
 this step, kubernetes will automatically ask digital ocean's LoadBalancer.
-If you don't have any LoadBalancer unit, it will be automatically created. (also starts charging you)
+If you don't have any LoadBalancer unit, it will be automatically create one. (also start charging you)
 
 > k8s/load_balancer.yaml
 ```yaml
@@ -168,32 +92,6 @@ kubectl get pods --all-namespaces -l app.kubernetes.io/name=ingress-nginx
 kubectl get svc --namespace=ingress-nginx
 ```
 
-### Create ingress resource
-> k8s/echo_ingress.yaml
-```yaml
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: echo-ingress
-spec:
-  rules:
-    - host: app.adcalendar.co
-      http:
-        paths:
-          - backend:
-              serviceName: echo1
-              servicePort: 80
-    - host: api.adcalendar.co
-      http:
-        paths:
-          - backend:
-              serviceName: echo2
-              servicePort: 80
-```
-```bash
-kubectl apply -f k8s/echo_ingress.yaml
-```
-
 ### Install Cert-Manager
 Certificates can be requested and configured by annotating Ingress Resources with the cert-manager.io/issuer annotation, appending a tls section to the Ingress spec, and configuring one or more Issuers or ClusterIssuers to specify your preferred certificate authority.
 
@@ -220,7 +118,7 @@ spec:
     # The ACME server URL
     server: https://acme-v02.api.letsencrypt.org/directory
     # Email address used for ACME registration
-    email: your_email_address_here
+    email: <%= admin_email %>
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
       name: letsencrypt-prod
@@ -233,53 +131,55 @@ spec:
 
 ```bash
 kubectl create -f k8s/lets_encrypt_issuer.yaml
-```
+``` 
 
-### Update echo_ingress.yaml to use this new Issuer
+### Deploying Demo App
 
-> k8s/echo_ingress.yaml
-```yaml
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: echo-ingress
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-spec:
-  tls:
-  - hosts:
-    - echo1.hjdo.net
-    - echo2.hjdo.net
-    secretName: echo-tls
-  rules:
-  - host: echo1.hjdo.net
-    http:
-      paths:
-      - backend:
-          serviceName: echo1
-          servicePort: 80
-  - host: echo2.hjdo.net
-    http:
-      paths:
-      - backend:
-          serviceName: echo2
-          servicePort: 80
-```
+[read](https://webcloudpower.com/helm-rails-static-files-path/)
+
+Create service nginx's config-map, where we serve static files, distribute app traffic to replicas.
+It will be referenced from k8s/demo.yaml
 
 ```bash
-kubectl apply -f k8s/echo_ingress.yaml
+kubectl apply -f k8s/config-maps/nginx-conf.yaml
 ```
 
-### Check Let's Encrypt progress
+Create Demo Ingress, Service, Pod. (to test configuration)
 
 ```bash
-kubectl describe certificate echo-tls
+kubectl apply -f k8s/demo.yaml
 ```
 
+Check Let's Encrypt progress
 
-### Debugging cert-manager
-https://cert-manager.io/docs/faq/acme/
+```bash
+kubectl describe certificate <%= k8s_name %>-demo-tls
+
+# Below is an example success message
+Events:
+  Type    Reason        Age   From          Message
+  ----    ------        ----  ----          -------
+  Normal  GeneratedKey  5m   cert-manager  Generated a new private key
+  Normal  Requested     5m   cert-manager  Created new CertificateRequest resource "<%= k8s_name %>-demo-tls-1514794236"
+  Normal  Issued        5m   cert-manager  Certificate issued successfully
+```
+
+To debug cert-manager [read](https://cert-manager.io/docs/faq/acme/).
+
+To delete all demo resources
+
+```bash
+kubectl delete -f k8s/demo.yaml
+```
+
+### Deploying Production App
+
+```bash
+kubectl apply -f k8s/config-maps/nginx-conf.yaml
+kubectl apply -f k8s/app.yaml
+kubectl apply -f k8s/ingress.yaml
+... etc
+```
 
 ### Auto Scaling
 - TODO
