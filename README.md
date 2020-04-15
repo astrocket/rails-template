@@ -154,7 +154,7 @@ Anycable RPC rails server
 ## Managing container logs through Logrotate
 [read](https://sandro-keil.de/blog/logrotate-for-docker-container/)
 
-```bash
+```text
 $ sudo nano /etc/logrotate.d/docker-container
 
 // paste below
