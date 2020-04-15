@@ -171,12 +171,12 @@ kubectl delete -f k8s/demo.yaml
 
 ### Deploying Production App
 
-`k8s/project/application-nginx-conf.yaml` creates application level nginx's(*different from ingress-nginx*) config-map, where we serve static files, distribute app traffic to puma replicas.
+`k8s/project/<%= k8s_name %>-nginx-conf.yaml` creates application level nginx's(*different from ingress-nginx*) config-map, where we serve static files, distribute app traffic to puma replicas.
 
 (It will be used when deploying k8s/app.yaml)
 
 ```bash
-kubectl apply -f k8s/project/application-nginx-conf.yaml
+kubectl apply -f k8s/project/<%= k8s_name %>-nginx-conf.yaml
 kubectl apply -f k8s/app.yaml
 kubectl apply -f k8s/ingress.yaml
 ... etc
