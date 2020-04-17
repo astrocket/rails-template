@@ -174,7 +174,6 @@ after_bundle do
     rails_command("generate rspec:install")
   end
   apply_and_commit 'spec/template.rb'
-  apply_and_commit 'docker/template.rb'
   apply_and_commit('k8s/template.rb')
 
   rails_command("db:create")
@@ -191,14 +190,12 @@ after_bundle do
 
   apply_and_commit 'config/template.rb'
 
-  copy_file 'README.md', force: true
-
-  apply("cd #{app_name} && yarn")
+  template "README.md.tt", "README.md", force: true
 
   git_commit("Project ready")
 
   puts set_color "All set!=================================", :green
-  puts set_color "Start by running 'cd #{app_name} && rails hot'", :green
+  puts set_color "Start by running 'cd #{app_name} && bundle && yarn && rails hot'", :green
   puts set_color "=========================================", :green
 end
 

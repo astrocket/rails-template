@@ -1,0 +1,53 @@
+# Start
+
+```bash
+bundle && yarn && rails hot
+```
+
+# Deploy
+
+## Docker
+
+Serve your application image from any image [hosting service](https://hub.docker.com/).
+
+## Kubernetes
+
+[k8s/README.md](k8s/README.md)
+
+# Tuning
+
+## Puma
+
+`process * thread * pod replicas < db connection`
+
+[heroku blog](https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#process-count-value)
+
+## Application Nginx
+
+You can customize application nginx through [config-map](k8s/project/<%= k8s_name %>-nginx-conf.yaml) as usual.
+
+## Ingress Nginx
+
+To make your service scalable, you should consider tuning your [ingress-nginx](https://kubernetes.github.io/ingress-nginx) as your needs.
+
+As you can read out from the guide linked above, you have 3 ways to tune ingress-nginx.
+
+**ConfigMap** : Global options for every ingress (like worker_process, worker_connection, proxy-body-size ..)
+
+**Annotation** : Per ingress options (like ssl, proxy-body-size..)
+
+**Custom Template** : Using file
+
+If you configure the same option using Annotation and ConfigMap, Annotation will override ConfigMap. (ex. proxy-body-size)
+
+https://github.com/nginxinc/kubernetes-ingress/tree/master/examples
+
+> example of scalable websocket server architecture
+[read](https://github.com/nginxinc/kubernetes-ingress/tree/master/examples/websocket)
+```text
+ws.example.com ->
+LoadBalancer ->
+Websocket supportive Nginx Ingress with SSL (with enough worker_connections) ->
+Anycable Go server ->
+Anycable RPC rails server
+```

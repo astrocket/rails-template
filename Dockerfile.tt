@@ -13,23 +13,14 @@ RUN apk add --no-cache --update \
     nodejs \
     yarn
 
-ARG APP_NAME
-
-ENV RAILS_ROOT $APP_NAME
+ENV RAILS_ROOT /app
+ENV BUNDLE_DIR /bundle
 
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
+COPY . $RAILS_ROOT
 
-ENV RAILS_ENV='production'
-ENV BUNDLE_PATH /bundle
-
-COPY package.json yarn.lock ./
-RUN yarn install --production
-
-COPY Gemfile Gemfile.lock ./
+RUN yarn install
 RUN gem install bundler:2.0.1
-RUN bundle install --jobs 20 --retry 5 --without development test
-
-COPY . .
-
-RUN ["chmod", "+x", "./docker/sidekiq/run.sh"]
+RUN bundle install --path $BUNDLE_DIR --jobs 20 --retry 5 --without development test
+RUN bundle exec rake assets:precompile

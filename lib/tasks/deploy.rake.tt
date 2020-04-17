@@ -1,0 +1,23 @@
+namespace :deploy do
+  namespace :demo do
+    task :up => :environment do
+      sh("kubectl apply -f k8s/demo.yaml")
+    end
+
+    task :down => :environment do
+      sh("kubectl apply -f k8s/demo.yaml")
+    end
+  end
+
+  namespace :production do
+    task :ingress => :environment do
+      sh("kubectl apply -f k8s/project/<%= k8s_name %>-nginx-conf.yaml")
+      sh("kubectl apply -f k8s/ingress.yaml")
+    end
+
+    task :all => :environment do
+      sh("kubectl apply -f k8s/web.yaml")
+      sh("kubectl apply -f k8s/sidekiq.yaml")
+    end
+  end
+end

@@ -177,7 +177,41 @@ It's recommended to manage resources seperately to prevent downtime while updati
 
 ```bash
 kubectl apply -f k8s/project/<%= k8s_name %>-nginx-conf.yaml
-kubectl apply -f k8s/app.yaml
+kubectl apply -f k8s/web.yaml
+kubectl apply -f k8s/sidekiq.yaml
 kubectl apply -f k8s/ingress.yaml
 ... etc
+```
+
+### Monitoring Commands
+
+#### Pod
+
+```bash
+kubectl get pods
+# NAME                                 READY   STATUS    RESTARTS   AGE
+# <%= k8s_name %>-demo-web-f45fbdf9-7wsqn   2/2     Running   0          18s
+# <%= k8s_name %>-demo-web-f45fbdf9-fsxz8   2/2     Running   0          18s
+# <%= k8s_name %>-demo-web-f45fbdf9-qhms6   2/2     Running   0          18s
+# <%= k8s_name %>-demo-web-f45fbdf9-vqfmj   2/2     Running   0          18s
+
+# for single pod (tail 5 lines)
+kubectl logs -f --tail=5 <%= k8s_name %>-demo-web-f45fbdf9-7wsqn -c app
+kubectl logs -f --tail=5 <%= k8s_name %>-demo-web-f45fbdf9-7wsqn -c nginx
+
+# for all pods
+kubectl logs -f --tail=5 --selector app=<%= k8s_name %>-demo-web -c app
+kubectl logs -f --tail=5 --selector app=<%= k8s_name %>-demo-web -c nginx
+```
+
+### Deployment Script
+
+Execute multiple kubectl commands with rails task.
+
+```bash
+rails deploy:demo:up
+rails deploy:demo:down
+
+rails deploy:production:ingress
+rails deploy:production:all
 ```
