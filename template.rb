@@ -179,6 +179,8 @@ after_bundle do
   end
   apply_and_commit 'spec/template.rb'
   apply_and_commit('k8s/template.rb')
+  template "Dockerfile.tt"
+  git_commit("generated Dockerfile")
 
   rails_command("db:create")
   rails_command("db:migrate")
@@ -195,7 +197,6 @@ after_bundle do
   apply_and_commit 'config/template.rb'
 
   template "README.md.tt", "README.md", force: true
-
   git_commit("project ready")
 
   puts set_color full_liner("Done"), :green
