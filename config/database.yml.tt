@@ -13,4 +13,4 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV["DATABASE_URL"] || Rails.application.credentials.production[:database_url] %>
+  url: <%%= ENV["DATABASE_URL"] || Rails.application.credentials.production[:database_url] %>
