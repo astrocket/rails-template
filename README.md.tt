@@ -1,32 +1,45 @@
-# Start
+## Start
 
 ```bash
 bundle && yarn && rails hot
 ```
 
-# Deploy
+## Deploy
 
-## Docker
+### Set credentials
+
+open credential and paste db, redis urls
+
+```bash
+EDITOR="nano" rails credentials:edit
+
+# like this
+production:
+  database_url: DATABASE_URL
+  redis_url: REDIS_URL
+```
+
+### Docker
 
 Serve your application image from any image [hosting service](https://hub.docker.com/).
 
-## Kubernetes
+### Kubernetes
 
 [k8s/README.md](k8s/README.md)
 
-# Tuning
+## Tuning
 
-## Puma
+### Puma
 
 `process * thread * pod replicas < db connection`
 
 [heroku blog](https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#process-count-value)
 
-## Application Nginx
+### Application Nginx
 
 You can customize application nginx through [config-map](k8s/project/<%= k8s_name %>-nginx-conf.yaml) as usual.
 
-## Ingress Nginx
+### Ingress Nginx
 
 To make your service scalable, you should consider tuning your [ingress-nginx](https://kubernetes.github.io/ingress-nginx) as your needs.
 
