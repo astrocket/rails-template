@@ -36,7 +36,6 @@ gem 'webpacker', '>= 4.0.0'
 # Background
 gem 'sidekiq'
 gem 'sidekiq_alive'
-<%= "#" unless use_slack_notification %>gem 'slack-ruby-client'
 # gem 'whenever'
 
 gem 'bootsnap', '>= 1.1.0', require: false

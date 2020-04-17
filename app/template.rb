@@ -65,6 +65,3 @@ remove_file "app/javascript/packs/hello_react.jsx"
 copy_file 'app/jobs/http_post_job.rb'
 template 'app/lib/exceptions/default_error.rb.tt'
 copy_file 'app/lib/bot_helper.rb'
-
-copy_file 'app/jobs/slack_message_job.rb' if use_slack_notification
-copy_file 'app/services/slack_service.rb' if use_slack_notification

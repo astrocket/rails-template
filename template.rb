@@ -45,7 +45,6 @@ def ask_questions
   use_react
   use_tailwind
   use_active_admin
-  use_slack_notification
   git_repo_url
   app_domain
   admin_email
@@ -65,11 +64,6 @@ end
 
 def admin_email
   @admin_email ||= ask_with_default("What is the admin's email address? (for SSL Certificate)", :blue, "admin@example.com")
-end
-
-def use_slack_notification
-  @use_slack_notification ||= ask_with_default("Would you like to use Slack as a notification service?", :blue, "yes")
-  @use_slack_notification == "yes"
 end
 
 def use_active_admin
