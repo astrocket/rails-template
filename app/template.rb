@@ -10,7 +10,7 @@ copy_file 'app/views/errors/500.html.erb'
 copy_file 'app/controllers/api/api_controller.rb'
 
 copy_file 'app/controllers/home_controller.rb'
-template 'app/views/home/index.html.erb.tt'
+copy_file 'app/views/home/index.html.erb'
 
 copy_file 'app/javascript/utils/api.js'
 copy_file 'app/javascript/utils/helpers.js'
@@ -27,18 +27,12 @@ if use_react
   template 'app/views/layouts/react.html.erb.tt'
 
   copy_file 'app/controllers/api/home_controller.rb'
-
-  copy_file 'app/assets/javascripts/application.js', force: true
 else
   template 'app/javascript/packs/application.stimulus.js.tt', 'app/javascript/packs/application.js', force: true
   copy_file 'app/javascript/controllers/index.js', force: true
 end
 
-insert_into_file 'app/views/layouts/application.html.erb', before: "</head>" do
-  <<-ERB
-  <%= stylesheet_pack_tag 'stylesheet', 'data-turbolinks-track': 'reload' %>
-  ERB
-end
+template "app/views/layouts/application.html.erb.tt", force: true
 
 if use_tailwind
   run "yarn add tailwindcss"
@@ -60,6 +54,7 @@ else
   copy_file 'app/assets/stylesheets/designs/_base.scss'
 end
 
+remove_file 'app/assets/stylesheets/application.css', force: true
 remove_file "app/javascript/packs/hello_react.jsx"
 
 copy_file 'app/jobs/http_post_job.rb'
