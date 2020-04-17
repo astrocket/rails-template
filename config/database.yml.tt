@@ -13,7 +13,4 @@ test:
 
 production:
   <<: *default
-  username: postgres
-  host: db
-  database: <%= app_name %>_production
-  password: <%= ENV['PRODUCTION_DATABASE_PASSWORD'] %>
+  url: <%= ENV["DATABASE_URL"] || Rails.application.credentials.production[:database_url] %>
