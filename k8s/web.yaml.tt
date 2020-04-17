@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <%= k8s_name %>-web
+spec:
+  selector:
+    matchLabels:
+      app: <%= k8s_name %>-web
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: <%= k8s_name %>-web
+    spec:
+      containers:
+        - name: app
+          image: # TODO Paste your image url
+          command: ["/bin/sh", "-c"]
+          args:
+            - "echo 'bundle exec rake db:migrate...';"
+            - "bundle exec rake db:migrate;"
+            - "echo 'start puma server...';"
+            - "bin/rails s -p 3000 -b '0.0.0.0';"
+          env:
+          - name: RAILS_ENV
+            value: production
+          - name: RAILS_LOG_TO_STDOUT
+            value: true
+          - name: RAILS_SERVE_STATIC_FILES
+            value: true
+          - name: RAILS_MASTER_KEY
+            valueFrom:
+              secretKeyRef:
+                name: <%= k8s_name %>-secrets
+                key: <%= k8s_name %>-master-key
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 1000Mi
+            limits:
+              cpu: 3600m
+              memory: 3276Mi
+        - name: nginx
+          image: nginx:1.17-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /assets
+              name: assets
+              readOnly: true
+            - mountPath: /etc/nginx/nginx.conf
+              name: nginx-conf
+              subPath: nginx.conf
+              readOnly: true
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: <%= k8s_name %>-nginx-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: assets
+          emptyDir: {}

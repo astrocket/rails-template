@@ -5,7 +5,6 @@ module Exceptions
     def initialize(msg = "알 수 없는 에러가 발생했습니다.", notification = false)
       @message = msg
       puts "DefaultError => #{msg}" if Rails.env.development?
-      <%= "#" unless use_slack_notification %>SlackService.send_message("Exceptions::DefaultError", msg, :error) if notification
     end
   end
 end

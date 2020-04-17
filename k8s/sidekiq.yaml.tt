@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <%= k8s_name %>-sidekiq
+spec:
+  selector:
+    matchLabels:
+      app: <%= k8s_name %>-sidekiq
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: <%= k8s_name %>-sidekiq
+    spec:
+      containers:
+        - name: sidekiq
+          image: # TODO Paste your image url
+          command: ["/bin/sh", "-c"]
+          args:
+            - "echo 'bundle exec rake db:migrate...';"
+            - "bundle exec rake db:migrate;"
+            - "echo 'start sidekiq worker...';"
+            - "bundle exec sidekiq -C config/sidekiq.yml;"
+          env:
+          - name: RAILS_ENV
+            value: production
+          - name: RAILS_LOG_TO_STDOUT
+            value: true
+          - name: RAILS_MASTER_KEY
+            valueFrom:
+              secretKeyRef:
+                name: <%= k8s_name %>-secrets
+                key: <%= k8s_name %>-master-key
+          resources:
+            requests:
+              cpu: 500m
+              memory: 500Mi
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+          ports:
+            - containerPort: 7433
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 7433
+            initialDelaySeconds: 80
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 7433
+            initialDelaySeconds: 80
+            timeoutSeconds: 5
+          lifecycle:
+            preStop:
+              exec:
+                command: ["k8s/sidekiq_quiet"]
+      terminationGracePeriodSeconds: 60

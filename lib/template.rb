@@ -1,4 +1,4 @@
-copy_file 'lib/tasks/deploy.rake'
+template 'lib/tasks/deploy.rake.tt'
 copy_file 'lib/tasks/hot.rake'
 if use_react
 
