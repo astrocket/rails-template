@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>🔥🔥🔥 <%= app_name %></title>
+    <meta name="description" content="Website for <%= app_name %>">
+    <meta property="og:type" content="object">
+    <meta property="og:site_name" content="🔥🔥🔥">
+    <meta property="og:title" content="🔥🔥🔥 <%= app_name %>">
+    <meta property="og:description" content="Website for <%= app_name %>">
+    <meta property="og:url" content="https://<%= app_domain %>">
+    <meta property="og:image" content="https://picsum.photos/200"/>
+    <meta name="keywords" content="<%= app_name %>">
+
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="yeti" content="index, follow">
+
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover" name="viewport">
+
+    <%%= csrf_meta_tags %>
+    <%%= csp_meta_tag %>
+
+    <% unless use_tailwind %>
+    <%%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <% end %>
+    <%%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%%= stylesheet_pack_tag 'stylesheet', 'data-turbolinks-track': 'reload' %>
+</head>
+
+  <body>
+    <div class="leading-normal tracking-normal text-gray-900">
+      <nav id="header" class="w-full bg-white border-b border-gray-400">
+        <div class="w-full container mx-auto px-3 py-1">
+          <div class="w-full flex items-center justify-between">
+            <a class="flex items-center text-indigo-400 no-underline hover:no-underline font-bold text-xl lg:text-2xl" href="/">🔥🔥🔥</a>
+            <div class="flex w-auto justify-end content-center">
+              <%%= link_to "<%= app_name %>", "/", class: "flex items-center text-sm lg:text-lg font-bold inline-block text-black-500 no-underline hover:text-indigo-800 hover:text-underline text-center h-10 p-2 md:h-auto md:p-4" %>
+              <% if use_react %>
+              <a href="/about" class="flex items-center text-sm lg:text-lg font-bold inline-block text-black-500 no-underline hover:text-indigo-800 hover:text-underline text-center h-10 p-2 md:h-auto md:p-4">react about</a>
+              <a href="/app" class="flex items-center text-sm lg:text-lg font-bold inline-block text-black-500 no-underline hover:text-indigo-800 hover:text-underline text-center h-10 p-2 md:h-auto md:p-4">rails ssr</a>
+              <% end %>
+              <%%= link_to "github", "https://github.com/astrocket/rails-template", target: "_blank", class: "flex items-center text-sm lg:text-lg font-bold inline-block text-black-500 no-underline hover:text-indigo-800 hover:text-underline text-center h-10 p-2 md:h-auto md:p-4" %>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="pb-14 bg-right bg-cover bg-gray-100 py-6 lg:pb-20 lg:pt-8 px-3 lg:px-0">
+        <div class="container mx-auto">
+          <div class="mx-auto" style="max-width: 768px;">
+            <%%= yield %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

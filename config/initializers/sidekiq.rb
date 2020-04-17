@@ -1,5 +1,5 @@
 redis_url = if Rails.env.production?
-              ENV["REDIS_URL"] || Rails.application.credentials.production[:redis_url]
+              ENV["REDIS_URL"] || Rails.application.credentials.dig(:production, :redis_url)
             else
               'redis://localhost:6379/1'
             end

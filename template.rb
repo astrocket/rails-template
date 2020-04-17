@@ -190,12 +190,16 @@ after_bundle do
     rails_command("db:migrate")
     run "rails generate active_admin:install AdminUser"
     rails_command("db:migrate")
+    copy_file 'app/assets/javascripts/active_admin.js', force: true
     copy_file 'app/assets/stylesheets/active_admin.scss', force: true
     git_commit("active_admin installed")
   end
 
+  rails_command("db:seed")
+
   apply_and_commit 'config/template.rb'
 
+  copy_file "public/robots.txt", force: true
   template "README.md.tt", "README.md", force: true
   git_commit("project ready")
 
