@@ -35,10 +35,13 @@ gem 'webpacker', '>= 4.0.0'
 
 # Background
 gem 'sidekiq'
-gem 'sidekiq_alive'
 # gem 'whenever'
 
 gem 'bootsnap', '>= 1.1.0', require: false
+
+group :production do
+  gem 'sidekiq_alive'
+end
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

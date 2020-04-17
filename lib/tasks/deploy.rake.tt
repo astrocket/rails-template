@@ -5,14 +5,25 @@ namespace :deploy do
     end
 
     task :down => :environment do
-      sh("kubectl apply -f k8s/demo.yaml")
+      sh("kubectl delete -f k8s/demo.yaml")
     end
   end
 
   namespace :production do
-    task :ingress => :environment do
-      sh("kubectl apply -f k8s/project/<%= k8s_name %>-nginx-conf.yaml")
-      sh("kubectl apply -f k8s/ingress.yaml")
+    namespace :ingress do
+      task :up => :environment do
+        sh("kubectl create secret generic <%= k8s_name %>-secrets --from-file=<%= k8s_name %>-master-key=config/master.key")
+        sh("kubectl apply -f k8s/project/<%= k8s_name %>-nginx-conf.yaml")
+        sh("kubectl apply -f k8s/service.yaml")
+        sh("kubectl apply -f k8s/ingress.yaml")
+      end
+
+      task :down => :environment do
+        sh("kubectl delete secret <%= k8s_name %>-secrets")
+        sh("kubectl delete -f k8s/project/<%= k8s_name %>-nginx-conf.yaml")
+        sh("kubectl delete -f k8s/service.yaml")
+        sh("kubectl delete -f k8s/ingress.yaml")
+      end
     end
 
     task :all => :environment do

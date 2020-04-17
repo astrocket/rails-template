@@ -24,7 +24,7 @@ end
 def add_template_repository_to_source_path
   if __FILE__ =~ %r{\Ahttps?://}
     source_paths.unshift(tempdir = Dir.mktmpdir("rails-template-"))
-    at_exit { FileUtils.remove_entry(tempdir) }
+    at_exit {FileUtils.remove_entry(tempdir)}
     git :clone => [
         "--quiet",
         "https://github.com/astrocket/rails-template",
@@ -41,13 +41,29 @@ def gemfile_requirement(name)
   req && req.gsub("'", %(")).strip.sub(/^,\s*"/, ', "')
 end
 
+def terminal_length
+  require 'io/console'
+  IO.console.winsize[1]
+rescue LoadError
+  Integer(`tput co`)
+end
+
+def full_liner(string)
+  remaining_length = terminal_length - string.length - 2
+  "#{string}" + "#{'-' * remaining_length}"
+end
+
 def ask_questions
-  use_react
+  use_stimulus
   use_tailwind
   use_active_admin
   git_repo_url
   app_domain
   admin_email
+end
+
+def k8s_name
+  app_name.downcase.gsub("_", "-")
 end
 
 def git_repo_url
@@ -56,10 +72,6 @@ end
 
 def app_domain
   @app_domain ||= ask_with_default("What is the app domain for this project?", :blue, "example.com")
-end
-
-def k8s_name
-  app_name.downcase.gsub("_", "-")
 end
 
 def admin_email
@@ -72,8 +84,12 @@ def use_active_admin
 end
 
 def use_react
-  @use_react ||= ask_with_default("Would you like to use React as front-end? (if not stimulus.js will be installed)", :blue, "yes")
-  @use_react == "yes"
+  !use_stimulus
+end
+
+def use_stimulus
+  @use_stimulus ||= ask_with_default("Would you like to use Stimulus as front-end? (if not react.js will be installed)", :blue, "yes")
+  @use_stimulus == "yes"
 end
 
 def use_tailwind
@@ -96,29 +112,22 @@ def git_repo_specified?
   git_repo_url != "skip" && !git_repo_url.strip.empty?
 end
 
+def commit_count
+  @commit_count ||= 1
+end
+
 def git_commit(msg)
   git :init unless preexisting_git_repo?
 
   git add: "-A ."
   git commit: "-n -m '#{msg}'"
-  puts set_color msg, :green
-end
-
-def git_push
-  git :init unless preexisting_git_repo?
-
-  git add: "-A ."
-  git commit: "-n -m 'initializing project'"
-  if git_repo_specified?
-    git remote: "add origin #{git_repo_url.shellescape}"
-    git remote: "add upstream #{git_repo_url.shellescape}"
-    git push: "-u origin --all"
-  end
+  puts set_color full_liner("🏃 #{msg}"), :green
+  @commit_count = +1
 end
 
 def apply_and_commit(applying)
   apply applying
-  git_commit("Applied => #{applying}")
+  git_commit("generated #{applying}")
 end
 
 def after_spring_stop
@@ -138,29 +147,30 @@ copy_file "Procfile", "Procfile", force: true
 template "ruby-version.tt", ".ruby-version", force: true
 
 run "gem install bundler -v '~> 2.0.0' --no-document --conservative"
-run "bundle install"
-
-git_commit("Gemfile setup")
 
 after_bundle do
+  git_commit("webpacker installed & gems are bundled & binstubs are generated")
+
   if use_react
     rails_command("webpacker:install:react")
     npms = ["axios", "hookrouter"]
     run "yarn add eslint-plugin-react-hooks --dev"
+    git_commit("webpacker:react installed")
   else
     rails_command("webpacker:install:stimulus")
     npms = %w(axios stimulus @stimulus/polyfills)
+    git_commit("webpacker:stimulus installed")
   end
 
   run "yarn add #{npms.join(' ')}"
   if use_react
     run "yarn remove turbolinks"
   end
-  git_commit("Yarn installed")
+  git_commit("yarn installed")
 
   run "bundle exec guard init"
   run "guard init livereload"
-  git_commit("Guard setup")
+  git_commit("guard installed")
 
   apply_and_commit('app/template.rb')
   apply_and_commit 'lib/template.rb'
@@ -179,17 +189,17 @@ after_bundle do
     run "rails generate active_admin:install AdminUser"
     rails_command("db:migrate")
     copy_file 'app/assets/stylesheets/active_admin.scss', force: true
-    git_commit("ActiveAdmin installed")
+    git_commit("active_admin installed")
   end
 
   apply_and_commit 'config/template.rb'
 
   template "README.md.tt", "README.md", force: true
 
-  git_commit("Project ready")
+  git_commit("project ready")
 
-  puts set_color "All set!=================================", :green
-  puts set_color "Start by running 'cd #{app_name} && bundle && yarn && rails hot'", :green
-  puts set_color "=========================================", :green
+  puts set_color full_liner("Done"), :green
+  puts set_color full_liner("Start by running 'cd #{app_name} && yarn && rails hot'"), :green
+  puts set_color full_liner(""), :green
 end
 

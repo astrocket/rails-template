@@ -209,9 +209,51 @@ kubectl logs -f --tail=5 --selector app=<%= k8s_name %>-demo-web -c nginx
 Execute multiple kubectl commands with rails task.
 
 ```bash
+# apply demo service, ingress, config, deployments
 rails deploy:demo:up
-rails deploy:demo:down
+rails deploy:demo:down # rollback
 
-rails deploy:production:ingress
+# push master.key to kubernetes secret
+# apply production application nginx config
+# apply production ingress
+rails deploy:production:ingress:up
+rails deploy:production:ingress:down # rollback
+
+# apply production deployments
 rails deploy:production:all
+```
+
+### Managing Secrets
+
+[How to Read Kubernetes Secrets](https://howchoo.com/g/ywvlmgnmode/read-kubernetes-secrets)
+
+push master.key to cluster secrets from local file
+
+```bash
+kubectl create secret generic <%= k8s_name %>-secrets --from-file=<%= k8s_name %>-master-key=config/master.key
+```
+
+reference pushed key from pod
+
+```yaml
+...
+          env:
+          - name: RAILS_MASTER_KEY
+            valueFrom:
+              secretKeyRef:
+                name: <%= k8s_name %>-secrets
+                key: <%= k8s_name %>-master-key
+...
+```
+
+read decoded key
+
+```yaml
+kubectl get secret <%= k8s_name %>-secrets -o jsonpath="{.data.<%= k8s_name %>-master-key}" | base64 --decode
+```
+
+delete secrets
+
+```bash
+kb delete secret <%= k8s_name %>-secrets
 ```
