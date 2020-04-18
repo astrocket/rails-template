@@ -5,6 +5,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
 spec:
   tls:
     - hosts:
@@ -38,7 +39,7 @@ data:
     user nginx;
     worker_processes  auto;
 
-    error_log /dev/stdout warn;
+    error_log /var/log/nginx/error.log warn;
     pid        /var/run/nginx.pid;
 
     events {
@@ -53,28 +54,26 @@ data:
                         '$status $body_bytes_sent "$http_referer" '
                         '"$http_user_agent" "$http_x_forwarded_for"';
 
-      access_log  /var/log/nginx/access.log main;
+      access_log  /dev/stdout main;
       # access_log off;
 
       sendfile on;
       tcp_nopush on;
       tcp_nodelay on;
 
-      keepalive_timeout  60;
+      keepalive_timeout  45;
 
       gzip  on;
       gzip_static  on;
       gzip_http_version 1.0;
-      gzip_comp_level 5;
+      gzip_comp_level 2;
+      gzip_min_length  1000;
       gzip_proxied any;
-      gzip_types application/x-javascript application/xhtml+xml application/xml application/xml+rss text/css text/javascript text/plain text/xml application/octet-stream image/x-icon image/png;
+      gzip_types application/x-javascript text/css text/javascript text/plain text/xml image/x-icon image/png;
       gzip_vary on;
       gzip_disable "MSIE [1-6].(?!.*SV1)";
 
-      client_max_body_size 100m;
-
-      server_names_hash_bucket_size 64;
-
+      client_max_body_size 20m;
 
       upstream app {
         server localhost:3000 fail_timeout=0;
@@ -83,13 +82,20 @@ data:
       server {
         listen 80;
 
-        root /assets;
+        root /;
 
-        keepalive_timeout 5;
+        keepalive_timeout 30;
         client_max_body_size 20m;
 
         location / {
           try_files $uri/index.html $uri/index.htm @app;
+        }
+
+        location /nginx_status {
+          stub_status on;
+          access_log off;
+          allow 127.0.0.1;
+          deny all;
         }
 
         location @app {
@@ -107,21 +113,6 @@ data:
             proxy_pass http://app;
             break;
           }
-        }
-
-        location /nginx_status {
-          stub_status on;
-          access_log off;
-          allow 127.0.0.1;
-          deny all;
-        }
-
-        location ~ ^/assets/ {
-          expires 1y;
-          add_header Cache-Control public;
-
-          add_header ETag "";
-          break;
         }
       }
     }
@@ -153,14 +144,27 @@ spec:
             - "-text=Hello <%= k8s_name %>"
           ports:
             - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            periodSeconds: 5
+            successThreshold: 2
+            failureThreshold: 2
+            timeoutSeconds: 5
         - name: nginx
           image: nginx:1.17-alpine
           ports:
             - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 5
+            successThreshold: 2
+            failureThreshold: 2
+            timeoutSeconds: 5
           volumeMounts:
-            - mountPath: /assets
-              name: assets
-              readOnly: true
             - mountPath: /etc/nginx/nginx.conf
               name: nginx-conf
               subPath: nginx.conf
@@ -172,5 +176,3 @@ spec:
             items:
               - key: nginx.conf
                 path: nginx.conf
-        - name: assets
-          emptyDir: {}

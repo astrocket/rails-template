@@ -147,6 +147,12 @@ Create Demo Ingress, Service, Pod. (to test configuration)
 kubectl apply -f k8s/demo.yaml
 ```
 
+Logging deployed demo app
+
+```bash
+rails deploy:logs:demo
+```
+
 Check Let's Encrypt progress
 
 ```bash
@@ -219,8 +225,15 @@ rails deploy:demo:down # rollback
 rails deploy:production:ingress:up
 rails deploy:production:ingress:down # rollback
 
+# migrate database with production image
+rails deploy:production:migrate
+
 # apply production deployments
 rails deploy:production:all
+
+# log containers
+rails deploy:logs:web
+rails deploy:logs:sidekiq
 ```
 
 ### Managing Secrets

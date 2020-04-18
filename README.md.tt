@@ -37,6 +37,8 @@ Serve your application image from any image [hosting service](https://hub.docker
 
 ### Application Nginx
 
+[read](https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration)
+
 You can customize application nginx through [config-map](k8s/project/<%= k8s_name %>-nginx-conf.yaml) as usual.
 
 ### Ingress Nginx

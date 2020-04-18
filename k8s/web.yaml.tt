@@ -22,8 +22,6 @@ spec:
           image: # TODO Paste your image url
           command: ["/bin/sh", "-c"]
           args:
-            - "echo 'bundle exec rake db:migrate...';"
-            - "bundle exec rake db:migrate;"
             - "echo 'start puma server...';"
             - "bin/rails s -p 3000 -b '0.0.0.0';"
           env:
@@ -38,6 +36,9 @@ spec:
               secretKeyRef:
                 name: <%= k8s_name %>-secrets
                 key: <%= k8s_name %>-master-key
+          volumeMounts:
+            - mountPath: /assets
+              name: assets
           ports:
             - containerPort: 3000
           resources:
@@ -47,6 +48,21 @@ spec:
             limits:
               cpu: 3600m
               memory: 3276Mi
+          readinessProbe:
+            httpGet:
+              path: /health_check
+              port: 3000
+            periodSeconds: 5
+            successThreshold: 2
+            failureThreshold: 2
+            timeoutSeconds: 5
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - "cp -r /app/public/* /assets"
         - name: nginx
           image: nginx:1.17-alpine
           ports:
@@ -59,6 +75,14 @@ spec:
               name: nginx-conf
               subPath: nginx.conf
               readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /health_check
+              port: 80
+            periodSeconds: 5
+            successThreshold: 2
+            failureThreshold: 2
+            timeoutSeconds: 5
       volumes:
         - name: nginx-conf
           configMap:

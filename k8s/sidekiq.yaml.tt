@@ -49,16 +49,19 @@ spec:
             httpGet:
               path: /
               port: 7433
-            initialDelaySeconds: 80
+            initialDelaySeconds: 15
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /
               port: 7433
-            initialDelaySeconds: 80
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            successThreshold: 2
+            failureThreshold: 2
             timeoutSeconds: 5
           lifecycle:
             preStop:
               exec:
                 command: ["k8s/sidekiq_quiet"]
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: 300

@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: <%= k8s_name %>-migration
+spec:
+  template:
+    spec:
+      containers:
+        - name: migration-app
+          image: # TODO Paste your image url
+            command: ["/bin/sh", "-c"]
+            args:
+                - "echo 'bundle exec rake db:migrate...';"
+                - "bundle exec rake db:migrate;"
+      restartPolicy: Never

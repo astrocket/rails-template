@@ -7,7 +7,7 @@ data:
     user nginx;
     worker_processes  auto;
 
-    error_log /dev/stdout warn;
+    error_log /var/log/nginx/error.log warn;
     pid        /var/run/nginx.pid;
 
     events {
@@ -22,28 +22,25 @@ data:
                         '$status $body_bytes_sent "$http_referer" '
                         '"$http_user_agent" "$http_x_forwarded_for"';
 
-      access_log  /var/log/nginx/access.log main;
+      access_log  /dev/stdout main;
       # access_log off;
 
       sendfile on;
       tcp_nopush on;
       tcp_nodelay on;
 
-      keepalive_timeout  60;
-
       gzip  on;
       gzip_static  on;
       gzip_http_version 1.0;
-      gzip_comp_level 5;
+      gzip_comp_level 2;
+      gzip_min_length  1000;
       gzip_proxied any;
-      gzip_types application/x-javascript application/xhtml+xml application/xml application/xml+rss text/css text/javascript text/plain text/xml application/octet-stream image/x-icon image/png;
+      gzip_types application/x-javascript text/css text/javascript text/plain text/xml image/x-icon image/png;
       gzip_vary on;
       gzip_disable "MSIE [1-6].(?!.*SV1)";
 
-      client_max_body_size 100m;
-
-      server_names_hash_bucket_size 64;
-
+      keepalive_timeout  45;
+      client_max_body_size 20m;
 
       upstream app {
         server localhost:3000 fail_timeout=0;
@@ -54,8 +51,24 @@ data:
 
         root /assets;
 
-        keepalive_timeout 5;
-        client_max_body_size 20m;
+        location /nginx_status {
+          stub_status on;
+          access_log off;
+          allow 127.0.0.1;
+          deny all;
+        }
+
+        location ~ ^/assets/ {
+          expires 60d;
+          add_header Cache-Control public;
+          add_header ETag "";
+          break;
+        }
+
+        location /admin {
+          client_max_body_size 100m;
+          try_files $uri/index.html $uri/index.htm @app;
+        }
 
         location / {
           try_files $uri/index.html $uri/index.htm @app;
@@ -67,8 +80,8 @@ data:
           proxy_http_version 1.1;
           proxy_redirect off;
 
-          proxy_read_timeout 60;
-          proxy_send_timeout 60;
+          proxy_read_timeout 30;
+          proxy_send_timeout 30;
 
           # If you don't find the filename in the static files
           # Then request it from the app server
@@ -76,21 +89,6 @@ data:
             proxy_pass http://app;
             break;
           }
-        }
-
-        location /nginx_status {
-          stub_status on;
-          access_log off;
-          allow 127.0.0.1;
-          deny all;
-        }
-
-        location ~ ^/assets/ {
-          expires 1y;
-          add_header Cache-Control public;
-
-          add_header ETag "";
-          break;
         }
       }
     }
