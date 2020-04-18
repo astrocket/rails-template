@@ -14,13 +14,6 @@ def assert_minimum_rails_version
   exit 1 if no?(prompt)
 end
 
-def assert_postgresql
-  return if IO.read("Gemfile") =~ /^\s*gem ['"]pg['"]/
-  fail Rails::Generators::Error,
-       "This template requires PostgreSQL, "\
-         "but the pg gem isn’t present in your Gemfile."
-end
-
 def add_template_repository_to_source_path
   if __FILE__ =~ %r{\Ahttps?://}
     source_paths.unshift(tempdir = Dir.mktmpdir("rails-template-"))
@@ -136,7 +129,6 @@ def after_spring_stop
 end
 
 assert_minimum_rails_version
-assert_postgresql
 add_template_repository_to_source_path
 ask_questions
 
@@ -202,6 +194,6 @@ after_bundle do
   copy_file "public/robots.txt", force: true
   template "README.md.tt", "README.md", force: true
   git_commit("project ready")
-  puts set_color full_liner("Start by running 'cd #{Rails.root.to_s.split("/").last} && yarn && rails hot'"), :green
+  puts set_color full_liner("Start by running 'cd #{@app_path} && yarn && rails hot'"), :green
   puts set_color full_liner(""), :green
 end

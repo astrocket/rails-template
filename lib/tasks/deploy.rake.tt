@@ -40,9 +40,19 @@ namespace :deploy do
   end
 
   namespace :production do
+    task :push => :environment do
+      image_tag = nil # account/repository:tag
+      raise "No image_tag" if image_tag.nil?
+      sh("docker build --build-arg rails_env=production -t #{image_tag} .")
+      sh("docker push #{image_tag}")
+    end
+
+    task :set_maseter_key => :environment do
+      sh("kubectl create secret generic <%= k8s_name %>-secrets --from-file=<%= k8s_name %>-master-key=config/master.key")
+    end
+
     namespace :ingress do
       task :up => :environment do
-        sh("kubectl create secret generic <%= k8s_name %>-secrets --from-file=<%= k8s_name %>-master-key=config/master.key")
         sh("kubectl apply -f k8s/project/<%= k8s_name %>-nginx-conf.yaml")
         sh("kubectl apply -f k8s/service.yaml")
         sh("kubectl apply -f k8s/ingress.yaml")

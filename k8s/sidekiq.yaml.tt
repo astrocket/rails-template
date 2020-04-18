@@ -11,7 +11,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
-      maxUnavailable: 25%
+      maxUnavailable: 50%
   template:
     metadata:
       labels:
@@ -20,15 +20,12 @@ spec:
       containers:
         - name: sidekiq
           image: # TODO Paste your image url
-          command: ["/bin/sh", "-c"]
-          args:
-            - "echo 'start sidekiq worker...';"
-            - "bundle exec sidekiq -C config/sidekiq.yml;"
+          command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
           env:
           - name: RAILS_ENV
-            value: production
+            value: "production"
           - name: RAILS_LOG_TO_STDOUT
-            value: true
+            value: "true"
           - name: RAILS_MASTER_KEY
             valueFrom:
               secretKeyRef:

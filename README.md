@@ -3,6 +3,8 @@
 ## Description
 Simple rails template for general project.
 
+[see generated sample](https://github.com/astrocket/rails-template-stimulus)
+
 ## Requirements
 * Rails 6.0.x
 * Ruby 2.6.x

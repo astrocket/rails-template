@@ -8,8 +8,13 @@ spec:
       containers:
         - name: migration-app
           image: # TODO Paste your image url
-            command: ["/bin/sh", "-c"]
-            args:
-                - "echo 'bundle exec rake db:migrate...';"
-                - "bundle exec rake db:migrate;"
+          command: ["bundle", "exec", "rake", "db:migrate"]
+          env:
+          - name: RAILS_ENV
+            value: "production"
+          - name: RAILS_MASTER_KEY
+            valueFrom:
+              secretKeyRef:
+                name: <%= k8s_name %>-secrets
+                key: <%= k8s_name %>-master-key
       restartPolicy: Never
