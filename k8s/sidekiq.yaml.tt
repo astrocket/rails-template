@@ -22,8 +22,6 @@ spec:
           image: # TODO Paste your image url
           command: ["/bin/sh", "-c"]
           args:
-            - "echo 'bundle exec rake db:migrate...';"
-            - "bundle exec rake db:migrate;"
             - "echo 'start sidekiq worker...';"
             - "bundle exec sidekiq -C config/sidekiq.yml;"
           env:
