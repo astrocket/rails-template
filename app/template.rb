@@ -41,7 +41,7 @@ if use_tailwind
   run "mkdir -p app/javascript/stylesheets/components"
 
   copy_file "app/javascript/stylesheets/application.scss"
-  copy_file "app/javascript/stylesheets/tailwind.config.js"
+  template "app/javascript/stylesheets/tailwind.config.js.tt", force: true
   copy_file "app/javascript/stylesheets/components/_buttons.scss"
   copy_file "app/javascript/stylesheets/components/_forms.scss"
 
