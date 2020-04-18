@@ -13,6 +13,9 @@ RUN apk add --no-cache --update \
     nodejs \
     yarn
 
+ARG rails_env
+ENV RAILS_ENV=$rails_env
+
 ENV RAILS_ROOT /app
 ENV BUNDLE_DIR /bundle
 

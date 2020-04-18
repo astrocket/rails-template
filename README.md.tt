@@ -23,6 +23,10 @@ production:
 
 Serve your application image from any image [hosting service](https://hub.docker.com/).
 
+```bash
+docker build --build-arg rails_env=production .
+```
+
 ### Kubernetes
 
 [k8s/README.md](k8s/README.md)

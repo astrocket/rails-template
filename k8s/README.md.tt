@@ -179,7 +179,7 @@ kubectl delete -f k8s/demo.yaml
 
 It's recommended to manage resources seperately to prevent downtime while updating your app.
 
-* `k8s/project/<%= k8s_name %>-nginx-conf.yaml` creates application level nginx's(*different from ingress-nginx*) config-map, where we serve static files, distribute app traffic to puma replicas. (It will be used when deploying k8s/app.yaml)
+* `k8s/project/<%= k8s_name %>-nginx-conf.yaml` creates application level nginx's(* is different from ingress-nginx*) config-map, where we serve static files, redirect app traffic to puma. (It will be used when deploying k8s/app.yaml)
 
 ```bash
 kubectl apply -f k8s/project/<%= k8s_name %>-nginx-conf.yaml
@@ -210,6 +210,15 @@ kubectl logs -f --tail=5 --selector app=<%= k8s_name %>-demo-web -c app
 kubectl logs -f --tail=5 --selector app=<%= k8s_name %>-demo-web -c nginx
 ```
 
+#### Container
+
+log containers using [lib/tasks/deploy.rake](lib/tasks/deploy.rake)
+
+```bash
+rails deploy:logs:web
+rails deploy:logs:sidekiq
+```
+
 ### Deployment Script
 
 Execute multiple kubectl commands with rails task.
@@ -230,10 +239,6 @@ rails deploy:production:migrate
 
 # apply production deployments
 rails deploy:production:all
-
-# log containers
-rails deploy:logs:web
-rails deploy:logs:sidekiq
 ```
 
 ### Managing Secrets
