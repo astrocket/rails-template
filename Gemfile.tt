@@ -22,7 +22,6 @@ gem 'jbuilder', '~> 2.5'
 # gem 'aasm'
 
 # View
-gem 'sass-rails', '~> 5.0'
 gem 'webpacker', '>= 4.0.0'
 <%= "gem 'turbolinks', '~> 5'" unless use_react %>
 # gem 'inline_svg' if using svg files
