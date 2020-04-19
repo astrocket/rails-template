@@ -47,7 +47,7 @@ namespace :deploy do
       sh("docker push #{image_tag}")
     end
 
-    task :set_maseter_key => :environment do
+    task :set_master_key => :environment do
       sh("kubectl create secret generic <%= k8s_name %>-secrets --from-file=<%= k8s_name %>-master-key=config/master.key")
     end
 
