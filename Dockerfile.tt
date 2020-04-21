@@ -1,6 +1,7 @@
 FROM ruby:<%= RUBY_VERSION %>-alpine
 
-RUN apk add --no-cache --update \
+RUN apk add \
+    build-base \
     nano \
     curl-dev \
     ca-certificates \
@@ -20,13 +21,18 @@ ARG rails_env
 ENV RAILS_ENV=$rails_env
 
 ENV RAILS_ROOT /app
-ENV BUNDLE_DIR /bundle
+ENV BUNDLE_DIR /tmp
 
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
-COPY . $RAILS_ROOT
 
-RUN yarn install
+COPY package.json yarn.lock ./
+RUN yarn install --$RAILS_ENV
+
+COPY Gemfile Gemfile.lock ./
 RUN gem install bundler:2.0.1
 RUN bundle install --path $BUNDLE_DIR --jobs 20 --retry 5 --without development test
+
+COPY . .
+
 RUN bundle exec rake assets:precompile
