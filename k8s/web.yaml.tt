@@ -28,6 +28,8 @@ spec:
             value: "true"
           - name: RAILS_SERVE_STATIC_FILES
             value: "true"
+          - name: REDIS_URL
+            value: "redis://<%= k8s_name %>-redis-svc:6379"
           - name: RAILS_MASTER_KEY
             valueFrom:
               secretKeyRef:

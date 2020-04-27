@@ -198,6 +198,7 @@ kubectl create secret generic <%= k8s_name %>-secrets --from-file=<%= k8s_name %
 kubectl apply -f k8s/ingress.yaml # from load-balancer to web service
 kubectl apply -f k8s/service.yaml # web service for web deployment
 kubectl apply -f k8s/project/<%= k8s_name %>-nginx-conf.yaml # for web deployment's nginx
+kubectl apply -f k8s/redis.yaml # redis
 kubectl apply -f k8s/web.yaml # puma & nginx
 kubectl apply -f k8s/sidekiq.yaml # sidekiq
 ... etc

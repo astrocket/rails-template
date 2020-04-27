@@ -26,6 +26,8 @@ spec:
             value: "production"
           - name: RAILS_LOG_TO_STDOUT
             value: "true"
+          - name: REDIS_URL
+            value: "redis://<%= k8s_name %>-redis-svc:6379"
           - name: RAILS_MASTER_KEY
             valueFrom:
               secretKeyRef:
