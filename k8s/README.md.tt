@@ -133,7 +133,17 @@ spec:
 
 ```bash
 kubectl create -f k8s/cluster/lets_encrypt_issuer.yaml
-``` 
+```
+
+### Install the DigitalOcean Kubernetes metrics server tool
+
+[read](https://www.digitalocean.com/docs/kubernetes/resources/autoscaling-with-hpa-ca/)
+
+```bash
+kubectl apply -f k8s/doks-metrics-server.yaml
+```
+
+with above metrics installed, you can use `kubectl top pods` to monitor your pod's resource usage.
 
 ## Deploy
 
@@ -323,3 +333,10 @@ Websocket supportive Nginx Ingress with SSL (with enough worker_connections) ->
 Anycable Go server ->
 Anycable RPC rails server
 ```
+
+#### Auto Scaling
+
+[read](https://www.digitalocean.com/docs/kubernetes/resources/autoscaling-with-hpa-ca/)
+
+1. Cluster Autoscaling (from DigitalOcean's dashboard)
+2. Horizontal Pod Autoscaling (from HorizontalPodAutoscaler resource)

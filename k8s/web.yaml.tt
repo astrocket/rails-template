@@ -43,8 +43,8 @@ spec:
               cpu: 1000m
               memory: 1000Mi
             limits:
-              cpu: 3600m
-              memory: 3276Mi
+              cpu: 1100m
+              memory: 1100Mi
           readinessProbe:
             httpGet:
               path: /health_check
@@ -89,3 +89,20 @@ spec:
                 path: nginx.conf
         - name: assets
           emptyDir: {}
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: <%= k8s_name %>-web
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: <%= k8s_name %>-web
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
