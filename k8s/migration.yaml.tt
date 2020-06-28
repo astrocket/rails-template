@@ -5,9 +5,12 @@ metadata:
 spec:
   template:
     spec:
+      imagePullSecrets:
+        - name: docker-hub-key
       containers:
         - name: migration-app
           image: # TODO Paste your image url
+          imagePullPolicy: Always
           command: ["bundle", "exec", "rake", "db:migrate"]
           env:
           - name: RAILS_ENV

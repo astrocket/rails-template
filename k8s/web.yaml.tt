@@ -17,9 +17,12 @@ spec:
       labels:
         app: <%= k8s_name %>-web
     spec:
+      imagePullSecrets:
+        - name: docker-hub-key
       containers:
         - name: app
           image: # TODO Paste your image url
+          imagePullPolicy: Always
           command: ["bin/rails", "s", "-b", "0.0.0.0"]
           env:
           - name: RAILS_ENV
