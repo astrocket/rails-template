@@ -42,8 +42,6 @@ if use_tailwind
 
   copy_file "app/javascript/stylesheets/application.scss"
   template "app/javascript/stylesheets/tailwind.config.js.tt", force: true
-  copy_file "app/javascript/stylesheets/components/_buttons.scss"
-  copy_file "app/javascript/stylesheets/components/_forms.scss"
 
   inject_into_file("./postcss.config.js",
                    "var tailwindcss = require('tailwindcss');\n",  before: "module.exports")
