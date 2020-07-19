@@ -49,6 +49,7 @@ end
 def ask_questions
   use_stimulus
   use_tailwind
+  use_tailwind_ui
   use_active_admin
   git_repo_url
   app_domain
@@ -81,13 +82,19 @@ def use_react
 end
 
 def use_stimulus
-  @use_stimulus ||= ask_with_default("Would you like to use Stimulus as front-end? (if not react.js will be installed)", :blue, "yes")
+  @use_stimulus ||= ask_with_default("Would you like to use Stimulus.js as front-end? (if not React.js will be installed)", :blue, "yes")
   @use_stimulus == "yes"
 end
 
 def use_tailwind
-  @use_tailwind ||= ask_with_default("Would you like to use Tailswind.css? (if not default scss set will be installed)", :blue, "yes")
+  @use_tailwind ||= ask_with_default("Would you like to use Tailwind.css? (if not default scss set will be installed)", :blue, "yes")
   @use_tailwind == "yes"
+end
+
+def use_tailwind_ui
+  @use_tailwind_ui = false unless use_tailwind
+  @use_tailwind_ui ||= ask_with_default("Would you like to use TailwindUI? (You have to purchase license from https://tailwindui.com)", :blue, "no")
+  @use_tailwind_ui == "yes"
 end
 
 def ask_with_default(question, color, default)
@@ -159,10 +166,6 @@ after_bundle do
     run "yarn remove turbolinks"
   end
   git_commit("yarn installed")
-
-  run "bundle exec guard init"
-  run "guard init livereload"
-  git_commit("guard installed")
 
   apply_and_commit('app/template.rb')
   apply_and_commit 'lib/template.rb'

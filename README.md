@@ -26,7 +26,6 @@ $ rails new project -T -d postgresql \
 * ActiveAdmin + ArcticAdmin for application admin
 * Foreman setting for integrative dev setup
 * Rspec + FactoryBot setting for test code
-* Guard + LiveReload setting for hot reloading
 * [Tailwind CSS](https://github.com/justalever/kickoff_tailwind) with simple [theme](https://www.tailwindtoolbox.com/templates/app-landing-page)
 
 ## Foreman start task
@@ -39,7 +38,6 @@ It runs
 
 * rails
 * webpacker
-* guard
 * sidekiq
 
 ## Stimulus.js (productive)

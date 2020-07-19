@@ -36,16 +36,16 @@ template "app/views/layouts/application.html.erb.tt", force: true
 
 if use_tailwind
   run "yarn add tailwindcss"
-
+  run "yarn add @tailwindcss/ui" if use_tailwind_ui
   run "mkdir -p app/javascript/stylesheets"
   run "mkdir -p app/javascript/stylesheets/components"
 
   copy_file "app/javascript/stylesheets/application.scss"
-  template "app/javascript/stylesheets/tailwind.config.js.tt", force: true
+  template "tailwind.config.js.tt", force: true
 
   inject_into_file("./postcss.config.js",
                    "var tailwindcss = require('tailwindcss');\n",  before: "module.exports")
-  inject_into_file("./postcss.config.js", "\n    tailwindcss('./app/javascript/stylesheets/tailwind.config.js'),", after: "plugins: [")
+  inject_into_file("./postcss.config.js", "\n    tailwindcss('./tailwind.config.js'),", after: "plugins: [")
 else
   copy_file 'app/assets/stylesheets/application.scss'
   copy_file 'app/assets/stylesheets/designs/_constants.scss'

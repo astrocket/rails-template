@@ -11,7 +11,7 @@ gem 'puma' <%= gemfile_requirement("puma") %>
 # gem 'redis', '~> 4.0'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
-# gem 'aws-sdk-s3' # for DigitalOcean config
+# gem 'aws-sdk-s3' # for DigitalOcean Space
 
 # Auth
 <%= "#" unless use_active_admin %>gem 'devise'
@@ -22,8 +22,8 @@ gem 'jbuilder', '~> 2.5'
 # gem 'aasm'
 
 # View
-gem 'webpacker', '>= 4.0.0'
-<%= "gem 'turbolinks', '~> 5'" unless use_react %>
+gem 'webpacker'
+<%= "gem 'turbolinks'" unless use_react %>
 # gem 'inline_svg' if using svg files
 
 # CMS
@@ -55,15 +55,12 @@ group :development do
   # Foreman
   gem 'foreman'
   # Hot Reloading
-  gem 'guard-livereload', '~> 2.5', require: false
-  gem 'guard'
-  gem 'guard-zeus'
   gem 'rack-livereload'
   # Debugging
   gem "better_errors"
   gem "binding_of_caller"
   # Test
-  gem 'rspec-rails', '~> 4.0.0.beta4'
+  gem 'rspec-rails'
   gem 'factory_bot_rails'
   # Mail
   gem "letter_opener"
