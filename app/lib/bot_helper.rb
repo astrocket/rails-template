@@ -22,11 +22,13 @@ module BotHelper
 
     def get(url, options = {})
       options = {
-          headers: false
+          headers: false,
+          timeout: 10
       }.merge!(options)
 
       uri = URI.parse(URI.escape(url))
       https = Net::HTTP.new(uri.host,uri.port)
+      https.read_timeout = options[:timeout] || 10
       https.use_ssl = url.include?('https')
       req = Net::HTTP::Get.new(uri)
       options[:headers].map {|k, v| req[k] = v } if options[:headers]
@@ -38,11 +40,13 @@ module BotHelper
           body: {},
           headers: {
               'Content-Type' => 'application/json'
-          }
+          },
+          timeout: 10
       }.merge!(options)
 
       uri = URI.parse(URI.escape(url))
       https = Net::HTTP.new(uri.host,uri.port)
+      https.read_timeout = options[:timeout] || 10
       https.use_ssl = url.include?('https')
       req = Net::HTTP::Post.new(uri.path, initheader = options[:headers])
       req.body = options[:body].to_json
