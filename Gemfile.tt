@@ -28,6 +28,7 @@ gem 'webpacker'
 
 # CMS
 <%= "#" unless use_active_admin %>gem 'activeadmin'
+<%= "#" unless use_active_admin %>gem 'sass-rails'
 <%= "#" unless use_active_admin %>gem 'activeadmin_addons'
 <%= "#" unless use_active_admin %>gem 'arctic_admin'
 <%= "#" unless use_active_admin %>gem 'arbre', '>= 1.2.1'

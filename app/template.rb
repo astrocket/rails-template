@@ -35,7 +35,7 @@ end
 template "app/views/layouts/application.html.erb.tt", force: true
 
 if use_tailwind
-  run "yarn add tailwindcss"
+  run "yarn add tailwindcss@1.9"
   run "yarn add @tailwindcss/ui" if use_tailwind_ui
   run "mkdir -p app/javascript/stylesheets"
   run "mkdir -p app/javascript/stylesheets/components"
