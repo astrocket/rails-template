@@ -6,7 +6,7 @@ class StimulusGenerator < Rails::Generators::Base
 
   def set_up
     @stimulus_path = "app/javascript/controllers/#{controller_name}/#{action_name}_controller.js"
-    @controller_pattern = "#{controller_name.split('/').join('--')}--#{action_name}"
+    @controller_pattern = "#{controller_name.split('/').join('--')}--#{action_name.gsub("_", "-")}"
   end
 
   def generate_stimulus
