@@ -23,7 +23,7 @@ gem 'jbuilder', '~> 2.5'
 
 # View
 gem 'webpacker'
-<%= "gem 'turbolinks'" unless use_react %>
+gem 'turbolinks'
 # gem 'inline_svg' if using svg files
 
 # CMS

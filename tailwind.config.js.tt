@@ -32,6 +32,8 @@ module.exports = {
     }
   },
   plugins: [
-<% if use_tailwind_ui %>  require('@tailwindcss/ui')<% end %>
+<% if use_tailwind_ui %>    require('@tailwindcss/forms'),<% end %>
+<% if use_tailwind_ui %>    require('@tailwindcss/typography'),<% end %>
+<% if use_tailwind_ui %>    require('@tailwindcss/aspect-ratio'),<% end %>
   ],
 };

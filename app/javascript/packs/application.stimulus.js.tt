@@ -17,4 +17,5 @@ require("channels")
 // const imagePath = (name) => images(name, true)
 
 import "stylesheets/application";
-import "controllers"
+import "controllers";
+<% if use_tailwind_ui %>import "alpinejs";<% end %>

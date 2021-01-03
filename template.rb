@@ -77,12 +77,8 @@ def use_active_admin
   @use_active_admin == "yes"
 end
 
-def use_react
-  !use_stimulus
-end
-
 def use_stimulus
-  @use_stimulus ||= ask_with_default("Would you like to use Stimulus.js as front-end? (if not React.js will be installed)", :blue, "yes")
+  @use_stimulus ||= ask_with_default("Would you like to use Stimulus.js as front-end?", :blue, "yes")
   @use_stimulus == "yes"
 end
 
@@ -150,21 +146,11 @@ run "gem install bundler -v '~> 2.0.0' --no-document --conservative"
 after_bundle do
   git_commit("webpacker installed & gems are bundled & binstubs are generated")
 
-  if use_react
-    rails_command("webpacker:install:react")
-    npms = ["axios", "hookrouter"]
-    run "yarn add eslint-plugin-react-hooks --dev"
-    git_commit("webpacker:react installed")
-  else
-    rails_command("webpacker:install:stimulus")
-    npms = %w(axios stimulus @stimulus/polyfills)
-    git_commit("webpacker:stimulus installed")
-  end
+  rails_command("webpacker:install:stimulus")
+  npms = %w(axios stimulus @stimulus/polyfills)
+  git_commit("webpacker:stimulus installed")
 
   run "yarn add #{npms.join(' ')}"
-  if use_react
-    run "yarn remove turbolinks"
-  end
   git_commit("yarn installed")
 
   apply_and_commit('app/template.rb')
