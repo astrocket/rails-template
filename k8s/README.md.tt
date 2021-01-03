@@ -16,16 +16,13 @@ brew install kubectl
 
 Use the name of your cluster instead of example-cluster-01 in the following command.
 
-Generate API Token & Paste it ([link](https://cloud.digitalocean.com/account/api/tokens))
-```bash
-DigitalOcean access token: your_DO_token
-```
+Generate API Token & Copy it ([link](https://cloud.digitalocean.com/account/api/tokens))
 
 Authenticate through doctl command (doctl is a DigitalOcean's own cli tool [link](https://github.com/digitalocean/doctl))
 ```bash
 brew install doctl
 doctl auth init
-# paste your_DO_token
+# paste API Token
 ```
 
 Add your cluster to local config (you can get your cluster's name from DO's dashboard)
