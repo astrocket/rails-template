@@ -27,7 +27,7 @@ $ rails new project -T -d postgresql \
 * ActiveAdmin + ArcticAdmin for application admin
 * Foreman setting for integrative dev setup
 * Rspec + FactoryBot setting for test code
-* [Tailwind CSS](https://github.com/justalever/kickoff_tailwind) with simple [theme](https://www.tailwindtoolbox.com/templates/app-landing-page)
+* TailwindCSS
 
 ## Foreman start task
 

@@ -5,8 +5,13 @@ class StimulusGenerator < Rails::Generators::Base
   attr_accessor :stimulus_path, :controller_pattern
 
   def set_up
-    @stimulus_path = "app/javascript/controllers/#{controller_name}/#{action_name}_controller.js"
-    @controller_pattern = "#{controller_name.split('/').join('--')}--#{action_name.gsub("_", "-")}"
+    if action_name.present?
+      @stimulus_path = "app/javascript/controllers/#{controller_name}/#{action_name}_controller.js"
+      @controller_pattern = "#{controller_name.split('/').join('--')}--#{action_name.gsub("_", "-")}"
+    else
+      @stimulus_path = "app/javascript/controllers/#{controller_name}_controller.js"
+      @controller_pattern = "#{controller_name.split('/').join('--')}"
+    end
   end
 
   def generate_stimulus

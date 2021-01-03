@@ -1,6 +1,8 @@
 ## Start dev
 
 ```bash
+rails db:create
+rails db:migrate
 bundle && yarn && rails hot
 ```
 
