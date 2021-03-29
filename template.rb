@@ -138,6 +138,7 @@ ask_questions
 template "Gemfile.tt", force: true
 
 copy_file "gitignore", ".gitignore", force: true
+copy_file "dockerignore", ".dockerignore", force: true
 copy_file "Procfile", "Procfile", force: true
 template "ruby-version.tt", ".ruby-version", force: true
 

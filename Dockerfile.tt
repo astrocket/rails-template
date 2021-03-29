@@ -12,7 +12,10 @@ RUN apk add \
     tzdata \
     postgresql-dev \
     nodejs \
-    yarn
+    yarn \
+    libc6-compat \
+    curl \
+    git
 
 ARG master_key
 ENV MASTER_KEY=$master_key
@@ -31,7 +34,8 @@ RUN yarn install --$RAILS_ENV
 
 COPY Gemfile Gemfile.lock ./
 RUN gem install bundler:2.0.1
-RUN bundle install --path $BUNDLE_DIR --jobs 20 --retry 5 --without development test
+RUN bundle config build.google-protobuf --with-cflags=-D__va_copy=va_copy
+RUN BUNDLE_FORCE_RUBY_PLATFORM=1 bundle install --path $BUNDLE_DIR --jobs 20 --retry 5 --without development test
 
 COPY . .
 

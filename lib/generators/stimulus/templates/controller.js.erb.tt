@@ -1,4 +1,4 @@
-// <div data-controller="<%%= controller_pattern %>">
+// <div data-controller="<%%= controller_pattern %>" data-<%%= controller_pattern %>-hello-value="Hello from">
 //
 // </div>
 import { Controller } from "stimulus";
@@ -7,8 +7,12 @@ import helpers from 'utils/helpers';
 
 export default class extends Controller {
   static targets = [ "" ];
+  static values = {
+    hello: String
+  }
 
   connect() {
-    console.log("Stimulus connected from <%%= stimulus_path %>");
+    const hello = this.hasHelloValue ? this.helloValue : "Something Wrong";
+    console.log(`${hello} <%%= stimulus_path %>`);
   }
 }
