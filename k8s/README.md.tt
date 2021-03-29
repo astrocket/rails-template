@@ -94,7 +94,7 @@ Certificates can be requested and configured by annotating Ingress Resources wit
 
 ```bash
 # install cert-manager and its Custom Resource Definitions (CRDs) like Issuers and ClusterIssuers.
-kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.14.1/cert-manager.yaml
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.16.1/cert-manager.yaml
 
 # Verify installation
 kubectl get pods --namespace cert-manager
@@ -137,7 +137,7 @@ kubectl create -f k8s/cluster/lets_encrypt_issuer.yaml
 [read](https://www.digitalocean.com/docs/kubernetes/resources/autoscaling-with-hpa-ca/)
 
 ```bash
-kubectl apply -f k8s/doks-metrics-server.yaml
+kubectl apply -f k8s/cluster/doks-metrics-server.yaml
 ```
 
 with above metrics installed, you can use `kubectl top pods` to monitor your pod's resource usage.

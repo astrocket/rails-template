@@ -34,11 +34,11 @@ spec:
             - containerPort: 6379
           resources:
             requests:
-              cpu: 1000m
-              memory: 1000Mi
+              cpu: 100m
+              memory: 200Mi
             limits:
-              cpu: 1100m
-              memory: 1100Mi
+              cpu: 300m
+              memory: 500Mi
           volumeMounts:
             - mountPath: /data
               name: <%= k8s_name %>-redis-data

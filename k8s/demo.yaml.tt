@@ -125,7 +125,7 @@ spec:
   selector:
     matchLabels:
       app: <%= k8s_name %>-demo-web
-  replicas: 4
+  replicas: 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
