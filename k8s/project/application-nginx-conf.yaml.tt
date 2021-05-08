@@ -43,7 +43,7 @@ data:
       client_max_body_size 20m;
 
       upstream app {
-        server localhost:3000 fail_timeout=0;
+        server 127.0.0.1:3000 fail_timeout=0;
       }
 
       server {

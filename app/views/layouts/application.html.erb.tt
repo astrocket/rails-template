@@ -15,7 +15,7 @@
     <meta name="googlebot" content="index, follow">
     <meta name="yeti" content="index, follow">
 
-    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover" name="viewport">
+    <meta content="width=device-width,minimum-scale=1,initial-scale=1" name="viewport">
 
     <%%= csrf_meta_tags %>
     <%%= csp_meta_tag %>
