@@ -1,18 +1,25 @@
-// <div data-controller="<%%= controller_pattern %>" data-<%%= controller_pattern %>-hello-value="Hello from">
+// <div data-controller="<%%= controller_pattern %>">
 //
 // </div>
 import { Controller } from "stimulus";
-import api from 'utils/api';
+import api from "utils/api";
 import helpers from 'utils/helpers';
 
+// https://stimulus.hotwired.dev/reference
 export default class extends Controller {
   static targets = [ "" ];
-  static values = {
-    hello: String
+  static classes = [ "" ]
+  static values = {};
+
+  initialize() {
+
   }
 
   connect() {
-    const hello = this.hasHelloValue ? this.helloValue : "Something Wrong";
-    console.log(`${hello} <%%= stimulus_path %>`);
+    console.log("Stimulus connected from <%%= stimulus_path %>");
+  }
+
+  disconnect() {
+
   }
 }
