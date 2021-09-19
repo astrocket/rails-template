@@ -1,4 +1,3 @@
-apply 'app/models/application_record.rb'
 apply 'app/helpers/application_helper.rb'
 
 copy_file 'app/views/errors/404.html.erb'
@@ -23,8 +22,8 @@ end
 template "app/views/layouts/application.html.erb.tt", force: true
 
 if use_tailwind
-  run "yarn add tailwindcss@npm:@tailwindcss/postcss7-compat @tailwindcss/postcss7-compat postcss@^7 autoprefixer@^9"
-  run "yarn add @tailwindcss/forms @tailwindcss/typography @tailwindcss/aspect-ratio alpinejs" if use_tailwind_ui
+  run "yarn add tailwindcss@latest postcss@latest autoprefixer@latest"
+  run "yarn add @tailwindcss/forms @tailwindcss/typography @tailwindcss/aspect-ratio alpinejs tailwindcss-truncate-multiline" if use_tailwind_ui
   run "mkdir -p app/javascript/stylesheets"
   run "mkdir -p app/javascript/stylesheets/components"
 

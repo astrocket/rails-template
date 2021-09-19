@@ -1,33 +1,19 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  purge: [
-    './app/views/**/*.html.erb'
-  ],
+  mode: 'jit',
+  purge: {
+    safelist: [
+      "type", // [type='checkbox']
+    ],
+    content: [
+      './app/views/**/*.html.erb'
+    ]
+  },
   theme: {
     extend: {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-      },
-      maxWidth: {
-        xs: '20rem',
-        sm: '24rem',
-        md: '28rem',
-        lg: '32rem',
-        xl: '36rem',
-        '2xl': '42rem',
-        '3xl': '48rem',
-        '4xl': '56rem',
-        '5xl': '64rem',
-        '6xl': '72rem',
-        full: '100%',
-        '1/4': '25%',
-        '2/4': '50%',
-        '3/4': '75%',
-        '1/5': '20%',
-        '2/5': '40%',
-        '3/5': '60%',
-        '4/5': '80%',
       },
     }
   },
@@ -35,5 +21,6 @@ module.exports = {
 <% if use_tailwind_ui %>    require('@tailwindcss/forms'),<% end %>
 <% if use_tailwind_ui %>    require('@tailwindcss/typography'),<% end %>
 <% if use_tailwind_ui %>    require('@tailwindcss/aspect-ratio'),<% end %>
+<% if use_tailwind_ui %>    require('tailwindcss-truncate-multiline')(),<% end %>
   ],
 };

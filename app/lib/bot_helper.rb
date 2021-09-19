@@ -20,13 +20,17 @@ module BotHelper
       JSON.parse(post(url, options).body)
     end
 
+    def delete_json(url, options = {})
+      JSON.parse(delete(url, options).body)
+    end
+
     def get(url, options = {})
       options = {
           headers: false,
           timeout: 10
       }.merge!(options)
 
-      uri = URI.parse(URI.escape(url))
+      uri = URI.parse(url)
       https = Net::HTTP.new(uri.host,uri.port)
       https.read_timeout = options[:timeout] || 10
       https.use_ssl = url.include?('https')
@@ -44,7 +48,7 @@ module BotHelper
           timeout: 10
       }.merge!(options)
 
-      uri = URI.parse(URI.escape(url))
+      uri = URI.parse(url)
       https = Net::HTTP.new(uri.host,uri.port)
       https.read_timeout = options[:timeout] || 10
       https.use_ssl = url.include?('https')
@@ -52,29 +56,23 @@ module BotHelper
       req.body = options[:body].to_json
       https.request(req)
     end
-  end
 
-  def url_shortner(url)
-    shortened_url = post_json("https://api-ssl.bitly.com/v4/shorten", {
-        headers: {
-            'Content-Type' =>'application/json',
-            "Authorization" => "Bearer #{Rails.application.credentials.(&:bitly_token)}"
-        },
-        body: {
-            domain: "bit.ly",
-            long_url: url
-        }
-    })["link"] if Rails.application.credentials.try(:bitly_token)
-    shortened_url ? shortened_url : url
-  end
+    def delete(url, options = {})
+      options = {
+          body: {},
+          headers: {
+              'Content-Type' => 'application/json'
+          },
+          timeout: 10
+      }.merge!(options)
 
-  def in_kst(utc_time)
-    kst = Time.parse(utc_time) + (Time.zone_offset('KST') || 32400)
-    kst.strftime("%Y-%m-%d %H:%M")
+      uri = URI.parse(url)
+      https = Net::HTTP.new(uri.host,uri.port)
+      https.read_timeout = options[:timeout] || 10
+      https.use_ssl = url.include?('https')
+      req = Net::HTTP::Delete.new(uri.path, initheader = options[:headers])
+      req.body = options[:body].to_json
+      https.request(req)
+    end
   end
-
-  def show_map(address)
-    url_shortner("#{URI.escape("http://map.kakao.com?q=#{address}")}#!/all/map/place")
-  end
-
 end

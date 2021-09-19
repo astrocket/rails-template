@@ -1,11 +1,20 @@
 insert_into_file 'app/helpers/application_helper.rb', before: /^end/ do
   <<-'RUBY'
   def stc
-    "#{controller_path.gsub('_', '-').gsub('/', '--')}--#{action_name.gsub('_', '-')}"
+    "#{ruby_to_stimulus(controller_path)}--#{ruby_to_stimulus(action_name)}"
   end
   
   def human_time(datetime)
     datetime.strftime("%m/%d %H:%M")
+  end
+
+  private
+
+  def ruby_to_stimulus(string)
+    string.underscore
+      .tr("_", "-")
+      .split("/")
+      .join("--")
   end
   RUBY
 end
