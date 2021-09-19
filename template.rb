@@ -2,7 +2,7 @@ require "fileutils"
 require "shellwords"
 require "tmpdir"
 
-RAILS_REQUIREMENT = "~> 6".freeze
+RAILS_REQUIREMENT = ">= 6".freeze
 
 def assert_minimum_rails_version
   requirement = Gem::Requirement.new(RAILS_REQUIREMENT)
