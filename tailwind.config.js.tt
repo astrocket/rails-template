@@ -21,6 +21,6 @@ module.exports = {
 <% if use_tailwind_ui %>    require('@tailwindcss/forms'),<% end %>
 <% if use_tailwind_ui %>    require('@tailwindcss/typography'),<% end %>
 <% if use_tailwind_ui %>    require('@tailwindcss/aspect-ratio'),<% end %>
-<% if use_tailwind_ui %>    require('tailwindcss-truncate-multiline')(),<% end %>
+<% if use_tailwind_ui %>    require('@tailwindcss/line-clamp'),<% end %>
   ],
 };

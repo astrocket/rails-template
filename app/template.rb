@@ -23,7 +23,7 @@ template "app/views/layouts/application.html.erb.tt", force: true
 
 if use_tailwind
   run "yarn add tailwindcss@latest postcss@latest autoprefixer@latest"
-  run "yarn add @tailwindcss/forms @tailwindcss/typography @tailwindcss/aspect-ratio alpinejs tailwindcss-truncate-multiline" if use_tailwind_ui
+  run "yarn add @tailwindcss/forms @tailwindcss/typography @tailwindcss/aspect-ratio alpinejs @tailwindcss/line-clamp" if use_tailwind_ui
   run "mkdir -p app/javascript/stylesheets"
   run "mkdir -p app/javascript/stylesheets/components"
 
