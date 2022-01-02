@@ -158,6 +158,6 @@ after_bundle do
   copy_file "public/robots.txt", force: true
   template "README.md.tt", "README.md", force: true
   git_commit("project ready")
-  puts set_color full_liner("Start by running 'cd #{@app_path} && yarn && rails hot'"), :green
+  puts set_color full_liner("Start by running 'cd #{@app_path} && forman start'"), :green
   puts set_color full_liner(""), :green
 end
