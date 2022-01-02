@@ -1,22 +1,22 @@
-insert_into_file 'config/routes.rb', before: /^end/ do
+insert_into_file "config/routes.rb", before: /^end/ do
   if use_active_admin
-  <<-'RUBY'
+    <<-'RUBY'
   
   authenticate :admin_user do
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
   end
-  RUBY
+    RUBY
   else
-  <<-'RUBY'
+    <<-'RUBY'
   
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
-  RUBY
+    RUBY
   end
 end
 
-insert_into_file 'config/routes.rb', before: /^end/ do
+insert_into_file "config/routes.rb", before: /^end/ do
   <<-'RUBY'
   
   namespace :api do
@@ -25,13 +25,13 @@ insert_into_file 'config/routes.rb', before: /^end/ do
   RUBY
 end
 
-insert_into_file 'config/routes.rb', before: /^end/ do
+insert_into_file "config/routes.rb", before: /^end/ do
   <<-'RUBY'
   root 'home#index'
   RUBY
 end
 
-insert_into_file 'config/routes.rb', before: /^end/ do
+insert_into_file "config/routes.rb", before: /^end/ do
   <<-'RUBY'
 
   %w( 404 422 500 ).each do |code|

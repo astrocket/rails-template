@@ -1,21 +1,20 @@
 # rails-template
 
 ## Description
-Simple rails template for general project.
+rails template for kubernetes deployment
 
 [see generated sample](https://github.com/astrocket/rails-template-stimulus)
 
 ## Requirements
-* Rails 6.x
-* Ruby 2.6.x
-* Node.js >=12.13.0
+* Rails 7.x (w/tailwind)
+* Ruby 3.x
 
 ## Installation
 
 To generate a Rails application using this template, pass the `-m` option to `rails new`, like this:
 
 ```bash
-$ rails new project -T -d postgresql \
+$ rails new project -T -d postgresql --css tailwind \
     -m https://raw.githubusercontent.com/astrocket/rails-template/master/template.rb
 ```
 
@@ -33,19 +32,15 @@ $ rails new project -T -d postgresql \
 
 Procfile based applications
 
-with `rails hot`
+with `foreman start`
 
 It runs
 
 * rails
-* webpacker
+* tailwind
 * sidekiq
 
-## Stimulus.js
-
-With [stimulus.js]([https://stimulusjs.org](https://stimulusjs.org/)) you can keep your client-side code style as basic style `html + css + js` stack and still get the advantages of modern Javascript open sources through npm.
-
-###  generator
+## Stimulus.js generator
 
 Stimulus specific generator task.
 

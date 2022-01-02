@@ -26,5 +26,4 @@ class StimulusGenerator < Rails::Generators::Base
       .split("/")
       .join("--")
   end
-
 end

@@ -5,7 +5,7 @@ class HomeController < ApplicationController
   # for k8s health check
   def health_check
     render json: {
-        health_check: "#{Rails.version} (#{Rails.env})"
+      health_check: "#{Rails.version} (#{Rails.env})"
     }
   end
 end

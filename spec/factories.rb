@@ -1,3 +1,2 @@
 FactoryBot.define do
-
 end

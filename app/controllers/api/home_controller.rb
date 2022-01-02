@@ -3,7 +3,7 @@ module Api
     # sample api
     def index
       render json: {
-          hello: "#{Rails.version} (#{Rails.env})"
+        hello: "#{Rails.version} (#{Rails.env})"
       }
     end
   end

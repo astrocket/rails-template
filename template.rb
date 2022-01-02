@@ -15,13 +15,13 @@ def assert_minimum_rails_version
 end
 
 def add_template_repository_to_source_path
-  if __FILE__ =~ %r{\Ahttps?://}
+  if __FILE__.match?(%r{\Ahttps?://})
     source_paths.unshift(tempdir = Dir.mktmpdir("rails-template-"))
-    at_exit {FileUtils.remove_entry(tempdir)}
-    git :clone => [
-        "--quiet",
-        "https://github.com/astrocket/rails-template",
-        tempdir
+    at_exit { FileUtils.remove_entry(tempdir) }
+    git clone: [
+      "--quiet",
+      "https://github.com/astrocket/rails-template",
+      tempdir
     ].map(&:shellescape).join(" ")
   else
     source_paths.unshift(File.dirname(__FILE__))
@@ -30,12 +30,12 @@ end
 
 def gemfile_requirement(name)
   @original_gemfile ||= IO.read("Gemfile")
-  req = @original_gemfile[/gem\s+['"]#{name}['"]\s*(,[><~= \t\d\.\w'"]*)?.*$/, 1]
-  req && req.gsub("'", %(")).strip.sub(/^,\s*"/, ', "')
+  req = @original_gemfile[/gem\s+['"]#{name}['"]\s*(,[><~= \t\d.\w'"]*)?.*$/, 1]
+  req && req.tr("'", %(")).strip.sub(/^,\s*"/, ', "')
 end
 
 def terminal_length
-  require 'io/console'
+  require "io/console"
   IO.console.winsize[1]
 rescue LoadError
   Integer(`tput co`)
@@ -43,13 +43,10 @@ end
 
 def full_liner(string)
   remaining_length = terminal_length - string.length - 2
-  "#{string}" + "#{'-' * remaining_length}"
+  string.to_s + ("-" * remaining_length).to_s
 end
 
 def ask_questions
-  use_stimulus
-  use_tailwind
-  use_tailwind_ui
   use_active_admin
   git_repo_url
   app_domain
@@ -57,7 +54,7 @@ def ask_questions
 end
 
 def k8s_name
-  app_name.downcase.gsub("_", "-")
+  app_name.downcase.tr("_", "-")
 end
 
 def git_repo_url
@@ -75,22 +72,6 @@ end
 def use_active_admin
   @use_active_admin ||= ask_with_default("Would you like to use ActiveAdmin as admin?", :blue, "yes")
   @use_active_admin == "yes"
-end
-
-def use_stimulus
-  @use_stimulus ||= ask_with_default("Would you like to use Stimulus.js as front-end?", :blue, "yes")
-  @use_stimulus == "yes"
-end
-
-def use_tailwind
-  @use_tailwind ||= ask_with_default("Would you like to use Tailwind.css? (if not default scss set will be installed)", :blue, "yes")
-  @use_tailwind == "yes"
-end
-
-def use_tailwind_ui
-  @use_tailwind_ui = false unless use_tailwind
-  @use_tailwind_ui ||= ask_with_default("Would you like to use TailwindUI? (You have to purchase license from https://tailwindui.com)", :blue, "no")
-  @use_tailwind_ui == "yes"
 end
 
 def ask_with_default(question, color, default)
@@ -135,51 +116,44 @@ assert_minimum_rails_version
 add_template_repository_to_source_path
 ask_questions
 
-template "Gemfile.tt", force: true
-
 copy_file "gitignore", ".gitignore", force: true
 copy_file "dockerignore", ".dockerignore", force: true
 copy_file "Procfile", "Procfile", force: true
 template "ruby-version.tt", ".ruby-version", force: true
 
-run "gem install bundler -v '~> 2.0.0' --no-document --conservative"
+run "gem install bundler --no-document --conservative"
 
 after_bundle do
-  git_commit("webpacker installed & gems are bundled & binstubs are generated")
+  run("bundle add rails-i18n image_processing sidekiq letter_opener rspec-rails")
+  run("bundle add sidekiq_alive --group production")
 
-  rails_command("webpacker:install:stimulus")
-  npms = %w(axios stimulus @stimulus/polyfills)
-  git_commit("webpacker:stimulus installed")
-
-  run "yarn add #{npms.join(' ')}"
-  git_commit("yarn installed")
-
-  apply_and_commit('app/template.rb')
-  apply_and_commit 'lib/template.rb'
-  after_spring_stop do
-    rails_command("generate rspec:install")
-  end
-  apply_and_commit 'spec/template.rb'
-  apply_and_commit('k8s/template.rb')
-  template "Dockerfile.tt"
-  git_commit("generated Dockerfile")
+  apply_and_commit("app/template.rb")
+  apply_and_commit "lib/template.rb"
+  rails_command("generate rspec:install")
+  apply_and_commit "spec/template.rb"
+  apply_and_commit("k8s/template.rb")
 
   rails_command("db:create")
   rails_command("db:migrate")
 
   if use_active_admin
+    # https://github.com/activeadmin/activeadmin/pull/7235 Rails 7 fix
+    run("bundle add inherited_resources --git \"https://github.com/activeadmin/inherited_resources\"")
+    run("bundle add arbre --git \"https://github.com/activeadmin/arbre\"")
+    run("bundle add activeadmin --git \"https://github.com/tagliala/activeadmin.git\" --branch \"feature/railties-7\"")
+    run("bundle add devise devise-i18n sass-rails activeadmin_addons arctic_admin")
     run "rails generate devise:install"
     rails_command("db:migrate")
     run "rails generate active_admin:install AdminUser"
     rails_command("db:migrate")
-    copy_file 'app/assets/javascripts/active_admin.js', force: true
-    copy_file 'app/assets/stylesheets/active_admin.scss', force: true
+    copy_file "app/assets/javascripts/active_admin.js", force: true
+    copy_file "app/assets/stylesheets/active_admin.scss", force: true
     git_commit("active_admin installed")
   end
 
   rails_command("db:seed")
 
-  apply_and_commit 'config/template.rb'
+  apply_and_commit "config/template.rb"
 
   copy_file "public/robots.txt", force: true
   template "README.md.tt", "README.md", force: true

@@ -13,3 +13,5 @@ template "k8s/cluster/lets_encrypt_issuer.yaml.tt"
 copy_file "k8s/cluster/load_balancer.yaml"
 copy_file "k8s/cluster/doks-metrics-server.yaml"
 copy_file "k8s/sidekiq_quite.sh"
+
+template "Dockerfile.tt"
