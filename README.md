@@ -21,12 +21,10 @@ $ rails new project -T -d postgresql --css tailwind \
 ## What's included?
 
 * Kubernetes & Docker for production deploy
-* Stimulus setting for client javascript
-* ActiveJob + Sidekiq + Redis setting for async jobs 
+* Tailwind & Stimulus by importmaps
+* ActiveJob, Sidekiq, Redis setting for background job 
 * ActiveAdmin + ArcticAdmin for application admin
-* Foreman setting for integrative dev setup
 * Rspec + FactoryBot setting for test code
-* TailwindCSS
 
 ## Foreman start task
 
