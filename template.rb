@@ -134,7 +134,9 @@ run("gem install bundler --no-document --conservative")
 run("bundle config set --local force_ruby_platform false")
 
 after_bundle do
-  run("bundle add rails-i18n image_processing sidekiq letter_opener rspec-rails")
+  run("bundle add rails-i18n image_processing sidekiq")
+  run("bundle add letter_opener --group development")
+  run("bundle add rspec-rails factory_bot_rails mock_redis database_cleaner-active_record --group test")
   run("bundle add sidekiq_alive --group production")
 
   apply_and_commit("app/template.rb")
