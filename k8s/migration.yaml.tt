@@ -3,13 +3,14 @@ kind: Job
 metadata:
   name: <%= k8s_name %>-migration
 spec:
+  ttlSecondsAfterFinished: 15
   template:
     spec:
       imagePullSecrets:
-        - name: docker-hub-key
+        - name: digitalocean-access-token
       containers:
         - name: migration-app
-          image: # TODO Paste your image url
+          image: $IMAGE_TAG
           imagePullPolicy: Always
           command: ["bundle", "exec", "rake", "db:migrate"]
           env:

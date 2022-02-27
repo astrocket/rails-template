@@ -18,10 +18,10 @@ spec:
         app: <%= k8s_name %>-sidekiq
     spec:
       imagePullSecrets:
-        - name: docker-hub-key
+        - name: digitalocean-access-token
       containers:
         - name: sidekiq
-          image: # TODO Paste your image url
+          image: $IMAGE_TAG
           imagePullPolicy: Always
           command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
           env:

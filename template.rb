@@ -48,13 +48,18 @@ end
 
 def ask_questions
   use_active_admin
-  git_repo_url
   app_domain
   admin_email
+  git_repo_url
+  container_registry_path
 end
 
 def k8s_name
   app_name.downcase.tr("_", "-")
+end
+
+def git_repo_path
+  git_repo_url[/github\.com(\/|:)(.+).git/, 2] || "username/#{app_name}"
 end
 
 def git_repo_url
@@ -72,6 +77,10 @@ end
 def use_active_admin
   @use_active_admin ||= ask_with_default("Would you like to use ActiveAdmin as admin?", :blue, "yes")
   @use_active_admin == "yes"
+end
+
+def container_registry_path
+  @container_registry_path ||= ask_with_default("What is your container registry path?", :blue, "registry.digitalocean.com/#{git_repo_path}")
 end
 
 def ask_with_default(question, color, default)
@@ -121,7 +130,8 @@ copy_file "dockerignore", ".dockerignore", force: true
 copy_file "Procfile", "Procfile", force: true
 template "ruby-version.tt", ".ruby-version", force: true
 
-run "gem install bundler --no-document --conservative"
+run("gem install bundler --no-document --conservative")
+run("bundle config set --local force_ruby_platform false")
 
 after_bundle do
   run("bundle add rails-i18n image_processing sidekiq letter_opener rspec-rails")
@@ -154,10 +164,11 @@ after_bundle do
   rails_command("db:seed")
 
   apply_and_commit "config/template.rb"
+  template ".circleci/config.yml.tt"
 
   copy_file "public/robots.txt", force: true
   template "README.md.tt", "README.md", force: true
   git_commit("project ready")
-  puts set_color full_liner("Start by running 'cd #{@app_path} && forman start'"), :green
+  puts set_color full_liner("Start by running 'cd #{@app_path} && foreman start'"), :green
   puts set_color full_liner(""), :green
 end

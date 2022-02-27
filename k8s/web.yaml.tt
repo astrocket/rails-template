@@ -9,7 +9,6 @@ spec:
   replicas: 2
   strategy:
     type: RollingUpdate
-    rollingUpdate:
       maxSurge: 1
       maxUnavailable: 50%
   template:
@@ -18,10 +17,10 @@ spec:
         app: <%= k8s_name %>-web
     spec:
       imagePullSecrets:
-        - name: docker-hub-key
+        - name: digitalocean-access-token
       containers:
         - name: app
-          image: # TODO Paste your image url
+          image: $IMAGE_TAG
           imagePullPolicy: Always
           command: ["bin/rails", "s", "-b", "0.0.0.0"]
           env:

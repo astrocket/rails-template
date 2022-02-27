@@ -1,0 +1,154 @@
+version: 2.1
+
+orbs:
+  k8s: digitalocean/k8s@0.1.1
+  docker: circleci/docker@2.0.2
+executors:
+  ruby:
+    parameters:
+      rails_env:
+        type: string
+        default: test
+    docker:
+      - image: circleci/ruby:<%= RUBY_VERSION %>-node
+        environment:
+          DIGITALOCEAN_CLUSTER: <your-cluster>
+          IMAGE_TAG: <%= container_registry_path %>:latest
+    environment:
+      RAILS_ENV: << parameters.rails_env >>
+  rspec:
+    parameters:
+      rails_env:
+        type: string
+        default: test
+    docker:
+      - image: circleci/ruby:<%= RUBY_VERSION %>-node
+        environment:
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_PORT: 5432
+          DATABASE_USER: postgres
+          REDIS_URL: redis://127.0.0.1:6379
+      - image: cimg/postgres:13.5
+        environment:
+          POSTGRES_USER: postgres
+      - image: cimg/redis:6.2.6
+    environment:
+      RAILS_ENV: << parameters.rails_env >>
+
+jobs:
+  rspec-test:
+    executor:
+      name: rspec
+      rails_env: test
+    steps:
+      - checkout
+      - run:
+          name: Wait for db
+          command: |
+            dockerize -wait tcp://localhost:5432 -timeout 1m
+            dockerize -wait tcp://localhost:6379 -timeout 1m
+      - run:
+          name: calculate app/assets checksum
+          command: |
+            echo $(find app/assets app/javascript config/initializers/assets.rb tailwind.config.js -type f | sort | xargs md5sum | cut -d= -f2 | md5sum | cut -c1-32) >> assets_checksum
+      - restore_cache:
+          keys:
+            - bundle-cache-<%= k8s_name %>-{{ checksum "Gemfile.lock" }}
+            - public-cache-<%= k8s_name %>-{{ checksum "assets_checksum" }}
+            - node-cache-<%= k8s_name %>-{{ checksum "yarn.lock" }}
+      - run:
+          name: bundle install via cache
+          command: |
+            gem install bundler:2.3.4
+            bundle config build.google-protobuf --with-cflags=-D__va_copy=va_copy
+            bundle config set path /home/circleci/project/vendor/bundle
+            bundle config set without development
+            BUNDLE_FORCE_RUBY_PLATFORM=1 bundle install --jobs 5 --retry 3
+      - run: sudo apt install -y postgresql-client || true
+      - run:
+          name: set test database
+          command: |
+            bundle exec rake db:create
+            bundle exec rake db:migrate
+      - run:
+          name: asset:precompile
+          command: |
+            yarn install --production
+            bundle exec rake assets:precompile
+      - run:
+          name: bundle exec rspec
+          command: |
+            bundle exec rspec
+      - save_cache:
+          key: bundle-cache-<%= k8s_name %>-{{ checksum "Gemfile.lock" }}
+          paths:
+            - /home/circleci/project/vendor/bundle
+      - save_cache:
+          key: public-cache-<%= k8s_name %>-{{ checksum "assets_checksum" }}
+          paths:
+            - public
+      - save_cache:
+          key: node-cache-<%= k8s_name %>-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+  build-image-apply:
+    executor:
+      name: ruby
+      rails_env: production
+    steps:
+      - setup_remote_docker:
+          version: 20.10.7
+          docker_layer_caching: true
+      - checkout
+      - k8s/install
+      - k8s/initialize:
+          cluster: $DIGITALOCEAN_CLUSTER
+      - run:
+          name: install base
+          command: |
+            sudo apt-get update
+            sudo apt-get install gettext
+      - run:
+          name: image build
+          command: |
+            docker build \
+              --build-arg rails_env=$RAILS_ENV \
+              --build-arg secret_key_base=dummy \
+              -t $IMAGE_TAG .
+      - run:
+          name: image push
+          command: |
+            doctl registry login
+            docker push $IMAGE_TAG
+      - run:
+          name: database migration
+          command: |
+            IMAGE_TAG=$IMAGE_TAG envsubst < k8s/migration.yaml | kubectl apply -f -
+            kubectl wait --timeout=20m --for=condition=complete job/<%= k8s_name %>-migration
+      - run:
+          name: apply k8s deployments
+          command: |
+            IMAGE_TAG=$IMAGE_TAG envsubst < k8s/sidekiq.yaml | kubectl apply -f -
+            IMAGE_TAG=$IMAGE_TAG envsubst < k8s/web.yaml | kubectl apply -f -
+      - run:
+          name: garbage collection for docker registry
+          command: |
+            echo y | doctl registry garbage-collection start --include-untagged-manifests $DIGITALOCEAN_REGISTRY_PATH || true
+
+workflows:
+  production:
+    jobs:
+      - rspec-test:
+          filters:
+            tags:
+              only: /^v\d.\d.\d$/
+            branches:
+              ignore: master
+      - build-image-apply:
+          filters:
+            tags:
+              only: /^v\d.\d.\d$/
+            branches:
+              ignore: /.*/
+          requires:
+            - rspec-test

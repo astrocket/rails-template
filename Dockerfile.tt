@@ -20,11 +20,17 @@ RUN apk add \
 ARG master_key
 ENV MASTER_KEY=$master_key
 
+ARG deploy_version
+ENV DEPLOY_VERSION=$deploy_version
+
+ARG secret_key_base
+ENV SECRET_KEY_BASE=$secret_key_base
+
 ARG rails_env
 ENV RAILS_ENV=$rails_env
 
 ENV RAILS_ROOT /app
-ENV BUNDLE_DIR /tmp
+ENV BUNDLE_DIR /vendor/bundle
 
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
