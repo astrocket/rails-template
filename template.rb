@@ -52,6 +52,7 @@ def ask_questions
   admin_email
   git_repo_url
   container_registry_path
+  use_k8s
 end
 
 def k8s_name
@@ -77,6 +78,11 @@ end
 def use_active_admin
   @use_active_admin ||= ask_with_default("Would you like to use ActiveAdmin as admin?", :blue, "yes")
   @use_active_admin == "yes"
+end
+
+def use_k8s
+  @use_k8s ||= ask_with_default("Would you like to use k8s as default deployment stack?", :blue, "yes")
+  @use_k8s == "yes"
 end
 
 def container_registry_path
@@ -143,16 +149,15 @@ after_bundle do
   apply_and_commit "lib/template.rb"
   rails_command("generate rspec:install")
   apply_and_commit "spec/template.rb"
-  apply_and_commit("k8s/template.rb")
+  if use_k8s
+    apply_and_commit("k8s/template.rb")
+  end
 
   rails_command("db:create")
   rails_command("db:migrate")
 
   if use_active_admin
-    # https://github.com/activeadmin/activeadmin/pull/7235 Rails 7 fix
-    run("bundle add inherited_resources --git \"https://github.com/activeadmin/inherited_resources\"")
-    run("bundle add arbre --git \"https://github.com/activeadmin/arbre\"")
-    run("bundle add activeadmin --git \"https://github.com/tagliala/activeadmin.git\" --branch \"feature/railties-7\"")
+    run("bundle add activeadmin")
     run("bundle add devise devise-i18n sass-rails activeadmin_addons arctic_admin")
     run "rails generate devise:install"
     rails_command("db:migrate")
