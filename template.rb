@@ -53,6 +53,9 @@ def ask_questions
   git_repo_url
   container_registry_path
   use_k8s
+  if use_k8s
+    k8s_cluster_name
+  end
 end
 
 def k8s_name
@@ -64,29 +67,33 @@ def git_repo_path
 end
 
 def git_repo_url
-  @git_repo_url ||= ask_with_default("What is the git remote URL for this project?", :blue, "skip")
+  @git_repo_url ||= ask_with_default("What is the git remote URL for this project?", :green, "skip")
 end
 
 def app_domain
-  @app_domain ||= ask_with_default("What is the app domain for this project?", :blue, "example.com")
+  @app_domain ||= ask_with_default("What is the app domain for this project?", :green, "example.com")
 end
 
 def admin_email
-  @admin_email ||= ask_with_default("What is the admin's email address? (for SSL Certificate)", :blue, "admin@example.com")
+  @admin_email ||= ask_with_default("What is the admin's email address? (for SSL Certificate)", :green, "admin@example.com")
 end
 
 def use_active_admin
-  @use_active_admin ||= ask_with_default("Would you like to use ActiveAdmin as admin?", :blue, "yes")
+  @use_active_admin ||= ask_with_default("Would you like to use ActiveAdmin as admin?", :green, "yes")
   @use_active_admin == "yes"
 end
 
 def use_k8s
-  @use_k8s ||= ask_with_default("Would you like to use k8s as default deployment stack?", :blue, "yes")
+  @use_k8s ||= ask_with_default("Would you like to use k8s as default deployment stack?", :green, "yes")
   @use_k8s == "yes"
 end
 
 def container_registry_path
-  @container_registry_path ||= ask_with_default("What is your container registry path?", :blue, "registry.digitalocean.com/#{git_repo_path}")
+  @container_registry_path ||= ask_with_default("What is your container registry path?", :green, "registry.digitalocean.com/#{git_repo_path}")
+end
+
+def k8s_cluster_name
+  @k8s_cluster_name ||= ask_with_default("What is digital ocean k8s cluster name?", :green, "example-cluster")
 end
 
 def ask_with_default(question, color, default)
@@ -140,10 +147,12 @@ run("gem install bundler --no-document --conservative")
 run("bundle config set --local force_ruby_platform false")
 
 after_bundle do
-  run("bundle add rails-i18n image_processing sidekiq")
+  run("bundle add rails-i18n image_processing sidekiq connection_pool kredis")
+  rails_command("kredis:install")
   run("bundle add letter_opener --group development")
   run("bundle add rspec-rails factory_bot_rails mock_redis database_cleaner-active_record --group test")
-  run("bundle add sidekiq_alive --group production")
+  run("bundle add sidekiq-cron sidekiq_alive --group production")
+  run("touch config/schedule.yml")
 
   apply_and_commit("app/template.rb")
   apply_and_commit "lib/template.rb"

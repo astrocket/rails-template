@@ -37,13 +37,7 @@ https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-
 
 ### Install the DigitalOcean Kubernetes metrics server tool
 
-[read](https://www.digitalocean.com/docs/kubernetes/resources/autoscaling-with-hpa-ca/)
-
-```bash
-kubectl apply -f k8s/cluster/doks-metrics-server.yaml
-```
-
-with above metrics installed, you can use `kubectl top pods` to monitor your pod's resource usage.
+https://marketplace.digitalocean.com/apps/kubernetes-monitoring-stack
 
 ## Deploy
 

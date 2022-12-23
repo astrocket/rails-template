@@ -4,14 +4,16 @@ insert_into_file "config/routes.rb", before: /^end/ do
   
   authenticate :admin_user do
     require 'sidekiq/web'
-    mount Sidekiq::Web => '/sidekiq'
+    require 'sidekiq/cron/web'
+    mount Sidekiq::Web => '/admin/sidekiq'
   end
     RUBY
   else
     <<-'RUBY'
   
   require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
+  require 'sidekiq/cron/web'
+  mount Sidekiq::Web => '/admin/sidekiq'
     RUBY
   end
 end

@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: <%= k8s_name %>-ingress
@@ -15,6 +15,10 @@ spec:
     - host: <%= app_domain %>
       http:
         paths:
-          - backend:
-              serviceName: <%= k8s_name %>-web-svc
-              servicePort: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: <%= k8s_name %>-web-svc
+                port:
+                  number: 80

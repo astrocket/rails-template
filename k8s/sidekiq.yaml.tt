@@ -23,7 +23,8 @@ spec:
         - name: sidekiq
           image: $IMAGE_TAG
           imagePullPolicy: Always
-          command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+          command: ["/bin/sh","-c"]
+          args: ["bundle exec sidekiq -C config/sidekiq.yml"]
           env:
           - name: RAILS_ENV
             value: "production"
@@ -31,6 +32,8 @@ spec:
             value: "true"
           - name: REDIS_URL
             value: "redis://<%= k8s_name %>-redis-svc:6379"
+          - name: DEPLOY_VERSION
+            value: $IMAGE_TAG
           - name: RAILS_MASTER_KEY
             valueFrom:
               secretKeyRef:

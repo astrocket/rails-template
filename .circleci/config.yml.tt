@@ -1,7 +1,9 @@
 version: 2.1
 
 orbs:
-  k8s: digitalocean/k8s@0.1.1
+  ruby: circleci/ruby@1.4.0
+  doctl: digitalocean/cli@0.1.1
+  k8s: circleci/kubernetes@0.1.0
   docker: circleci/docker@2.0.2
 executors:
   ruby:
@@ -11,9 +13,6 @@ executors:
         default: test
     docker:
       - image: circleci/ruby:<%= RUBY_VERSION %>-node
-        environment:
-          DIGITALOCEAN_CLUSTER: <your-cluster>
-          IMAGE_TAG: <%= container_registry_path %>:latest
     environment:
       RAILS_ENV: << parameters.rails_env >>
   rspec:
@@ -47,15 +46,9 @@ jobs:
           command: |
             dockerize -wait tcp://localhost:5432 -timeout 1m
             dockerize -wait tcp://localhost:6379 -timeout 1m
-      - run:
-          name: calculate app/assets checksum
-          command: |
-            echo $(find app/assets app/javascript config/initializers/assets.rb tailwind.config.js -type f | sort | xargs md5sum | cut -d= -f2 | md5sum | cut -c1-32) >> assets_checksum
       - restore_cache:
           keys:
             - bundle-cache-<%= k8s_name %>-{{ checksum "Gemfile.lock" }}
-            - public-cache-<%= k8s_name %>-{{ checksum "assets_checksum" }}
-            - node-cache-<%= k8s_name %>-{{ checksum "yarn.lock" }}
       - run:
           name: bundle install via cache
           command: |
@@ -71,11 +64,6 @@ jobs:
             bundle exec rake db:create
             bundle exec rake db:migrate
       - run:
-          name: asset:precompile
-          command: |
-            yarn install --production
-            bundle exec rake assets:precompile
-      - run:
           name: bundle exec rspec
           command: |
             bundle exec rspec
@@ -83,57 +71,68 @@ jobs:
           key: bundle-cache-<%= k8s_name %>-{{ checksum "Gemfile.lock" }}
           paths:
             - /home/circleci/project/vendor/bundle
-      - save_cache:
-          key: public-cache-<%= k8s_name %>-{{ checksum "assets_checksum" }}
-          paths:
-            - public
-      - save_cache:
-          key: node-cache-<%= k8s_name %>-{{ checksum "yarn.lock" }}
-          paths:
-            - node_modules
   build-image-apply:
     executor:
       name: ruby
       rails_env: production
+    parameters:
+      digitalocean-access-token:
+        type: env_var_name
+        default: DIGITALOCEAN_ACCESS_TOKEN
+        description: The access token to connect DigitalOcean. (@circleci config)
+      cluster:
+        type: string
+        default: <%= k8s_cluster_name %>
+      container-registry-path:
+        type: string
+        default: <%= container_registry_path %>
     steps:
       - setup_remote_docker:
           version: 20.10.7
           docker_layer_caching: true
       - checkout
       - k8s/install
-      - k8s/initialize:
-          cluster: $DIGITALOCEAN_CLUSTER
+      - doctl/install
+      - doctl/initialize:
+          digitalocean-access-token: <<parameters.digitalocean-access-token>>
+      - run: |
+          doctl kubernetes cluster kubeconfig save <<parameters.cluster>> --expiry-seconds=3600
       - run:
           name: install base
           command: |
             sudo apt-get update
             sudo apt-get install gettext
+      - restore_cache:
+          keys:
+            - bundle-cache-<%= k8s_name %>-{{ checksum "Gemfile.lock" }}
       - run:
           name: image build
           command: |
             docker build \
               --build-arg rails_env=$RAILS_ENV \
               --build-arg secret_key_base=dummy \
-              -t $IMAGE_TAG .
+              --build-arg bundle_dir=/home/circleci/project/vendor/bundle \
+              -t <<parameters.container-registry-path>>:$CIRCLE_SHA1 \
+              -t <<parameters.container-registry-path>>:latest .
+      - save_cache:
+          key: bundle-cache-<%= k8s_name %>-{{ checksum "Gemfile.lock" }}
+          paths:
+            - /home/circleci/project/vendor/bundle
       - run:
           name: image push
           command: |
-            doctl registry login
-            docker push $IMAGE_TAG
+            doctl registry login --expiry-seconds=3600
+            docker push <<parameters.container-registry-path>>
       - run:
           name: database migration
           command: |
-            IMAGE_TAG=$IMAGE_TAG envsubst < k8s/migration.yaml | kubectl apply -f -
+            IMAGE_TAG=$CIRCLE_SHA1 envsubst < k8s/migration.yaml | kubectl apply -f -
             kubectl wait --timeout=20m --for=condition=complete job/<%= k8s_name %>-migration
       - run:
           name: apply k8s deployments
           command: |
-            IMAGE_TAG=$IMAGE_TAG envsubst < k8s/sidekiq.yaml | kubectl apply -f -
-            IMAGE_TAG=$IMAGE_TAG envsubst < k8s/web.yaml | kubectl apply -f -
-      - run:
-          name: garbage collection for docker registry
-          command: |
-            echo y | doctl registry garbage-collection start --include-untagged-manifests $DIGITALOCEAN_REGISTRY_PATH || true
+            IMAGE_TAG=$CIRCLE_SHA1 envsubst < k8s/sidekiq.yaml | kubectl apply -f -
+            IMAGE_TAG=$CIRCLE_SHA1 envsubst < k8s/web.yaml | kubectl apply -f -
 
 workflows:
   production:
@@ -141,13 +140,13 @@ workflows:
       - rspec-test:
           filters:
             tags:
-              only: /^v\d.\d.\d$/
+              only: /^v[0-9]+.[0-9]+.[0-9]+/
             branches:
               ignore: master
       - build-image-apply:
           filters:
             tags:
-              only: /^v\d.\d.\d$/
+              only: /^v[0-9]+.[0-9]+.[0-9]+/
             branches:
               ignore: /.*/
           requires:

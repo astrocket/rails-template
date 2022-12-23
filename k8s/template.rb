@@ -10,8 +10,7 @@ template "k8s/redis.yaml.tt"
 
 template "k8s/project/application-nginx-conf.yaml.tt", "k8s/project/#{k8s_name}-nginx-conf.yaml"
 template "k8s/cluster/lets_encrypt_issuer.yaml.tt"
-copy_file "k8s/cluster/load_balancer.yaml"
-copy_file "k8s/cluster/doks-metrics-server.yaml"
+template "k8s/cluster/load_balancer.yaml.tt"
 copy_file "k8s/sidekiq_quite.sh"
 
 template "Dockerfile.tt"
