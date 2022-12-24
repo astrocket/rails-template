@@ -9,8 +9,9 @@ spec:
   replicas: 2
   strategy:
     type: RollingUpdate
+    rollingUpdate:
       maxSurge: 1
-      maxUnavailable: 50%
+      maxUnavailable: 0%
   template:
     metadata:
       labels:
@@ -20,19 +21,18 @@ spec:
         - name: digitalocean-access-token
       containers:
         - name: app
-          image: $IMAGE_TAG
+          image: <%= container_registry_path %>:$IMAGE_TAG
           imagePullPolicy: Always
-          command: ["/bin/sh","-c"]
-          args: ["bin/rails s -b 0.0.0.0"]
+          command: ["bin/rails", "s", "-b", "0.0.0.0"]
           env:
           - name: RAILS_ENV
             value: "production"
           - name: RAILS_LOG_TO_STDOUT
             value: "true"
-          - name: RAILS_SERVE_STATIC_FILES
-            value: "true"
           - name: REDIS_URL
             value: "redis://<%= k8s_name %>-redis-svc:6379"
+          - name: RAILS_SERVE_STATIC_FILES
+            value: "true"
           - name: DEPLOY_VERSION
             value: $IMAGE_TAG
           - name: RAILS_MASTER_KEY
@@ -47,11 +47,11 @@ spec:
             - containerPort: 3000
           resources:
             requests:
-              cpu: 1000m
-              memory: 1000Mi
+              cpu: 800m
+              memory: 1200Mi
             limits:
-              cpu: 1100m
-              memory: 1100Mi
+              cpu: 1000m
+              memory: 1400Mi
           readinessProbe:
             httpGet:
               path: /health_check
@@ -107,7 +107,7 @@ spec:
     kind: Deployment
     name: <%= k8s_name %>-web
   minReplicas: 2
-  maxReplicas: 4
+  maxReplicas: 3
   metrics:
     - type: Resource
       resource:

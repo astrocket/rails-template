@@ -126,13 +126,13 @@ jobs:
       - run:
           name: database migration
           command: |
-            IMAGE_TAG=<<parameters.container-registry-path>>:$CIRCLE_SHA1 envsubst < k8s/migration.yaml | kubectl apply -f -
+            IMAGE_TAG=$CIRCLE_SHA1 envsubst < k8s/migration.yaml | kubectl apply -f -
             kubectl wait --timeout=20m --for=condition=complete job/<%= k8s_name %>-migration
       - run:
           name: apply k8s deployments
           command: |
-            IMAGE_TAG=<<parameters.container-registry-path>>:$CIRCLE_SHA1 envsubst < k8s/sidekiq.yaml | kubectl apply -f -
-            IMAGE_TAG=<<parameters.container-registry-path>>:$CIRCLE_SHA1 envsubst < k8s/web.yaml | kubectl apply -f -
+            IMAGE_TAG=$CIRCLE_SHA1 envsubst < k8s/sidekiq.yaml | kubectl apply -f -
+            IMAGE_TAG=$CIRCLE_SHA1 envsubst < k8s/web.yaml | kubectl apply -f -
 
 workflows:
   production:
