@@ -8,7 +8,8 @@ import helpers from 'utils/helpers';
 // https://stimulus.hotwired.dev/reference
 export default class extends Controller {
   static targets = [ "" ];
-  static classes = [ "" ]
+  static outlets = [ "" ];
+  static classes = [ "" ];
   static values = {};
 
   initialize() {
