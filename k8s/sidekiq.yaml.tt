@@ -23,7 +23,8 @@ spec:
         - name: sidekiq
           image: <%= container_registry_path %>:$IMAGE_TAG
           imagePullPolicy: Always
-          command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+          command: ["/bin/sh","-c"]
+          args: ["bundle exec sidekiq -C config/sidekiq.yml"]
           env:
           - name: RAILS_ENV
             value: "production"

@@ -12,7 +12,8 @@ spec:
         - name: migration-app
           image: <%= container_registry_path %>:$IMAGE_TAG
           imagePullPolicy: Always
-          command: [ "bin/rails db:migrate" ]
+          command: [ "/bin/sh","-c" ]
+          args: [ "bin/rails db:migrate" ]
           env:
           - name: RAILS_ENV
             value: "production"
