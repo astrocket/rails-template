@@ -52,7 +52,7 @@ jobs:
       - run:
           name: bundle install via cache
           command: |
-            gem install bundler:2.3.4
+            gem install bundler:2.3.26
             bundle config build.google-protobuf --with-cflags=-D__va_copy=va_copy
             bundle config set path /home/circleci/project/vendor/bundle
             bundle config set without development
