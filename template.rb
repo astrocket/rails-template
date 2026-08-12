@@ -149,6 +149,7 @@ run("bundle config set --local force_ruby_platform false")
 after_bundle do
   run("bundle add rails-i18n image_processing sidekiq connection_pool kredis")
   rails_command("kredis:install")
+  run("yarn add postcss@^8")
   run("bundle add letter_opener --group development")
   run("bundle add rspec-rails factory_bot_rails mock_redis database_cleaner-active_record --group test")
   run("bundle add sidekiq-cron sidekiq_alive --group production")
